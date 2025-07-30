@@ -22,10 +22,10 @@ services:
         networks:
             - sail
         depends_on:
-            - pgsql
+            - postgis
             - redis
-    pgsql:
-        image: 'postgres:17'
+    postgis:
+        image: 'postgis/postgis:latest'
         ports:
             - '${FORWARD_DB_PORT:-5432}:5432'
         environment:
@@ -34,8 +34,8 @@ services:
             POSTGRES_USER: '${DB_USERNAME}'
             POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
         volumes:
-            - 'sail-pgsql:/var/lib/postgresql/data'
-            - './vendor/laravel/sail/database/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
+            - 'sail-postgis:/var/lib/postgresql/data'
+            - './vendor/laravel/sail/database/postgis/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
         networks:
             - sail
         healthcheck:
@@ -68,7 +68,7 @@ networks:
     sail:
         driver: bridge
 volumes:
-    sail-pgsql:
+    sail-postgis:
         driver: local
     sail-redis:
         driver: local
