@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('camps', function (Blueprint $table) {
-            $table->id('camp_id');
+        Schema::create('campgrounds', function (Blueprint $table) {
+            $table->id('campground_id');
             $table->magellanPoint('coordinates', 4326);
-            $table->bigInteger('osm_id')->nullable();
+            $table->string('osm_id', 20)->nullable();
             $table->string('name')->nullable();
             $table->text('description')->nullable();
             $table->string('website')->nullable();
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('camps');
+        Schema::dropIfExists('campgrounds');
     }
 };
