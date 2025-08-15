@@ -5,9 +5,9 @@ namespace App\Models;
 use Clickbar\Magellan\Data\Geometries\Point;
 use Illuminate\Database\Eloquent\Model;
 
-class Camp extends Model
+class Campground extends Model
 {
-    protected $primaryKey = 'camp_id';
+    protected $primaryKey = 'campground_id';
 
     protected $fillable = [
         'coordinates',
