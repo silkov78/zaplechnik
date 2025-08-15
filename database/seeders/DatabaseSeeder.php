@@ -14,14 +14,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'silkov78',
-            'email' => 'piotr.silkov78@gmail.com',
-            'password' => Hash::make('silkov78'),
-            'bio' => 'Вандрую па спадчыне',
-            'telegram' => '@' . fake()->userName(),
+        $this->call([
+            UserSeeder::class,
+            CampSeeder::class,
         ]);
-
-         User::factory(10)->create();
     }
 }
