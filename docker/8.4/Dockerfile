@@ -34,10 +34,7 @@ RUN apt-get update && apt-get upgrade -y \
        php8.4-intl php8.4-readline \
        php8.4-ldap \
        php8.4-msgpack php8.4-igbinary php8.4-redis php8.4-swoole \
-       php8.4-memcached php8.4-pcov php8.4-imagick
-
-    RUN apt-get install -y php-xdebug
-    COPY ext-xdebug.ini /etc/php/8.4/cli/conf.d/ext-xdebug.ini
+       php8.4-memcached php8.4-pcov php8.4-imagick php-xdebug
 
     RUN curl -sLS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer \
     && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
@@ -68,6 +65,7 @@ RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sail
 COPY start-container /usr/local/bin/start-container
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY php.ini /etc/php/8.4/cli/conf.d/99-sail.ini
+COPY ext-xdebug.ini /etc/php/8.4/cli/conf.d/ext-xdebug.ini
 RUN chmod +x /usr/local/bin/start-container
 
 EXPOSE 80/tcp
