@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\CheckIsPetyaSilkov;
 use App\Models\Campground;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -21,8 +22,13 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-// Campgrounds
-Route::get('/map', function () {
-    $campgrounds = Campground::all();
-    return view('campgrounds.index', compact('campgrounds'));
-})->middleware(CheckIsPetyaSilkov::class);
+// Administration
+Route::prefix('/administration')->middleware(CheckIsPetyaSilkov::class)->group(function () {
+    Route::get('/map', function () {
+        return view('campgrounds.index', ['campgrounds' => Campground::all()]);
+    });
+
+    Route::get('/users', function () {
+        return view('users.index', ['users' => User::all()]);
+    });
+});
