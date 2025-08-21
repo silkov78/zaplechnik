@@ -22,6 +22,7 @@ Route::middleware('auth')->group(function () {
 require __DIR__.'/auth.php';
 
 // Campgrounds
-Route::get('/campgrounds', function () {
-    return view('campgrounds.index', ['campgrounds' => Campground::all()]);
+Route::get('/map', function () {
+    $campgrounds = Campground::all();
+    return view('campgrounds.index', compact('campgrounds'));
 })->middleware(CheckIsPetyaSilkov::class);
