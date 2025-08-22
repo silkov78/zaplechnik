@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('fireplace', 15)->nullable();
             $table->string('picnic_table', 15)->nullable();
             $table->string('toilets', 15)->nullable();
-            $table->string('availability', 100)->nullable();
+            $table->string('access', 100)->nullable();
             $table->timestamps();
         });
     }
