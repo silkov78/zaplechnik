@@ -20,7 +20,7 @@ class Campground extends Model
         'fireplace',
         'picnic_table',
         'toilets',
-        'availability',
+        'access',
     ];
 
     protected $casts = [
