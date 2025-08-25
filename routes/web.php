@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Middleware\CheckIsPetyaSilkov;
 use App\Models\Campground;
 use Illuminate\Support\Facades\Route;
 
@@ -24,4 +23,4 @@ require __DIR__.'/auth.php';
 // Campgrounds
 Route::get('/campgrounds', function () {
     return view('campgrounds.index', ['campgrounds' => Campground::all()]);
-})->middleware(CheckIsPetyaSilkov::class);
+});
