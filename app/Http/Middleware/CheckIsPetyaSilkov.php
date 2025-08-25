@@ -6,7 +6,6 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CheckIsPetyaSilkov
 {
@@ -23,6 +22,6 @@ class CheckIsPetyaSilkov
             return $next($request);
         }
 
-        throw new NotFoundHttpException();
+        return redirect('/');
     }
 }
