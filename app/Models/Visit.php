@@ -23,4 +23,13 @@ class Visit extends Model
     {
         return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
+
+    public function campground(): BelongsTo
+    {
+        return $this->belongsTo(
+            Campground::class,
+            'campground_id',
+            'campground_id'
+        );
+    }
 }
