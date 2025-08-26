@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -42,5 +40,15 @@ class User extends Authenticatable
     public function visits(): HasMany
     {
         return $this->hasMany(Visit::class, 'user_id');
+    }
+
+    public function campgrounds(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Campground::class,
+            Visit::class,
+            'user_id',
+            'campground_id',
+        );
     }
 }
