@@ -10,9 +10,6 @@ use Illuminate\Support\Facades\File;
 
 class CampgroundSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(GeojsonParser $parser): void
     {
         $data = File::json(database_path('seeders/data/campgrounds.geojson'));
