@@ -15,6 +15,18 @@ services:
         depends_on:
             - postgis
 
+    frontend:
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile
+        ports:
+            - "3000:3000"
+        volumes:
+            - ./frontend:/app
+            - /app/node_modules
+        networks:
+            - zaplechnik_network
+
     postgis:
         image: 'postgis/postgis:17-3.5-alpine'
         ports:
