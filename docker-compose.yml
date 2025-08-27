@@ -13,7 +13,8 @@ services:
         networks:
             - laravel_network
         depends_on:
-            - postgis
+            postgis:
+                condition: service_healthy
 
     postgis:
         image: 'postgis/postgis:17-3.5-alpine'
