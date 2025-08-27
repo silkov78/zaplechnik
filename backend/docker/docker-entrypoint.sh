@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Awaiting database init
+sleep 5
+
 # Generate APP_KEY in .env
 php artisan key:generate
 
