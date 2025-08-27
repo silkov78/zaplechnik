@@ -1,12 +1,5 @@
 #!/bin/sh
 
-# Generate application key if it doesn't exist
-if [ ! -f .env ]; then
-    cp .env.example .env
-fi
-
-source ../.env
-
 # Generate APP_KEY in .env
 php artisan key:generate
 
