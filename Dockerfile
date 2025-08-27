@@ -38,6 +38,6 @@ COPY --chown=www:www . /var/www/html
 # Change current user to www
 USER www
 
-# Expose port 9000 and start php-fpm server
-EXPOSE 9000
-CMD ["php-fpm"]
+ENTRYPOINT ["docker/docker-entrypoint.sh"]
+
+EXPOSE 8000
