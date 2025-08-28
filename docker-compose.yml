@@ -6,8 +6,6 @@ services:
         volumes:
             - ./backend:/var/www/html
             - ./backend/docker/php/php.ini:/usr/local/etc/php/php.ini
-        env_file:
-            - .env
         ports:
             - '8000:8000'
         networks:
@@ -31,6 +29,8 @@ services:
         image: 'postgis/postgis:17-3.5-alpine'
         ports:
             - '${FORWARD_DB_PORT:-5432}:5432'
+        env_file:
+            - 'backend/.env'
         environment:
             PGPASSWORD: '${DB_PASSWORD:-secret}'
             POSTGRES_DB: '${DB_DATABASE}'
