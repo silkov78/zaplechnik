@@ -22,6 +22,8 @@ services:
         volumes:
             - ./frontend:/app
             - /app/node_modules
+        environment:
+            - NODE_ENV=development
         networks:
             - zaplechnik_network
 
@@ -32,9 +34,8 @@ services:
         env_file:
             - 'backend/.env'
         environment:
-            PGPASSWORD: '${DB_PASSWORD:-secret}'
-            POSTGRES_DB: '${DB_DATABASE}'
-            POSTGRES_USER: '${DB_USERNAME}'
+            POSTGRES_DB: '${DB_DATABASE:-db}'
+            POSTGRES_USER: '${DB_USERNAME:-user}'
             POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
         volumes:
             - 'pgsql_data:/var/lib/postgresql/data'
