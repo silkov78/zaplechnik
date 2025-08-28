@@ -31,12 +31,10 @@ services:
         image: 'postgis/postgis:17-3.5-alpine'
         ports:
             - '${FORWARD_DB_PORT:-5432}:5432'
-        env_file:
-            - 'backend/.env'
         environment:
-            POSTGRES_DB: '${DB_DATABASE:-db}'
-            POSTGRES_USER: '${DB_USERNAME:-user}'
-            POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+            POSTGRES_DB: 'zaplechnik_db'
+            POSTGRES_USER: 'vandra'
+            POSTGRES_PASSWORD: 'secret'
         volumes:
             - 'pgsql_data:/var/lib/postgresql/data'
         networks:
