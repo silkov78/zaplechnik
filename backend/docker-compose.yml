@@ -1,0 +1,52 @@
+services:
+    backend:
+        build:
+            context: .
+            dockerfile: docker/Dockerfile
+        container_name: backend-container
+        volumes:
+            - .:/var/www/html
+            - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+        env_file:
+            - .env
+        ports:
+            - '8000:8000'
+        networks:
+            - zaplechnik_network
+        depends_on:
+            postgis:
+                condition: service_healthy
+
+    postgis:
+        image: 'postgis/postgis:17-3.5-alpine'
+        container_name: postgis-container
+        ports:
+            - '${FORWARD_DB_PORT:-5432}:5432'
+        environment:
+            PGPASSWORD: '${DB_PASSWORD:-secret}'
+            POSTGRES_DB: '${DB_DATABASE}'
+            POSTGRES_USER: '${DB_USERNAME}'
+            POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+        volumes:
+            - 'pgsql_data:/var/lib/postgresql/data'
+        networks:
+            - zaplechnik_network
+        healthcheck:
+            test:
+                - CMD
+                - pg_isready
+                - '-q'
+                - '-d'
+                - '${DB_DATABASE}'
+                - '-U'
+                - '${DB_USERNAME}'
+            retries: 3
+            timeout: 5s
+
+volumes:
+    pgsql_data:
+        driver: local
+
+networks:
+    zaplechnik_network:
+        driver: bridge
