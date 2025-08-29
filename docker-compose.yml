@@ -18,12 +18,9 @@ services:
             context: ./frontend
             dockerfile: Dockerfile
         ports:
-            - "3000:3000"
+            - "80:80"
         volumes:
-            - ./frontend:/app
-            - /app/node_modules
-        environment:
-            - NODE_ENV=development
+            - ./frontend:/usr/share/nginx/html/
         networks:
             - zaplechnik_network
 
