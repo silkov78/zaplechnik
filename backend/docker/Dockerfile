@@ -1,6 +1,10 @@
 FROM php:8.4-fpm
 
-# Install system dependencies
+ARG USER_ID=1000
+ARG GROUP_ID=1000
+ARG USERNAME=appuser
+
+# ROOT (System config) STAGE
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -11,32 +15,27 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip
 
-# Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions
 RUN docker-php-ext-install pdo_pgsql mbstring exif pcntl bcmath gd
 
-# Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
+RUN groupadd -g $GROUP_ID $USERNAME && \
+    useradd -u $USER_ID -g $USERNAME -m $USERNAME
+
 WORKDIR /var/www/html
 
-# Copy existing application directory contents
 COPY . /var/www/html
 
-RUN composer install --no-interaction
+RUN chown -R $USERNAME:$USERNAME /var/www/html
 
-# Create and set permissions for entrypoint script
-COPY docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Set proper permissions
-RUN chown -R www-data:www-data /var/www/html/storage
-RUN chown -R www-data:www-data /var/www/html/bootstrap/cache
+# NON-Root (application) stage
+USER $USERNAME
 
-# Use the entrypoint script
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+RUN composer install --no-interaction --no-dev --optimize-autoloader
+
+ENTRYPOINT ["bash", "docker/docker-entrypoint.sh"]
 
 EXPOSE 8000
