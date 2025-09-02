@@ -2,6 +2,7 @@
 
 use Clickbar\Magellan\Schema\MagellanSchema;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
 
 return new class() extends Migration
 {
@@ -12,6 +13,9 @@ return new class() extends Migration
 
     public function down(): void
     {
-        MagellanSchema::disablePostgisIfExists($this->connection);
+//        MagellanSchema::disablePostgisIfExists($this->connection);
+        DB::statement('DROP EXTENSION IF EXISTS postgis_tiger_geocoder;');
+        DB::statement('DROP EXTENSION IF EXISTS postgis_topology;');
+        DB::statement('DROP EXTENSION IF EXISTS postgis;');
     }
 };

@@ -35,4 +35,11 @@ class Visit extends Model
             'campground_id'
         );
     }
+
+    protected static function booted(): void
+    {
+        static::creating(function ($visit) {
+            $visit->user->increment('visits_count');
+        });
+    }
 }

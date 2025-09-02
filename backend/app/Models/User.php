@@ -24,6 +24,10 @@ class User extends Authenticatable
         'bio',
     ];
 
+    protected $guarded = [
+        'visits_count',
+    ];
+
     protected $hidden = [
         'password',
         'remember_token',

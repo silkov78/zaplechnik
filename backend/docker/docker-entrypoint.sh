@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Awaiting database init
 sleep 5
