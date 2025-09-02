@@ -6,6 +6,7 @@ services:
         volumes:
             - ./backend:/var/www/html
             - ./backend/docker/php/php.ini:/usr/local/etc/php/php.ini
+            - /var/www/html/vendor
         ports:
             - '8000:8000'
         networks:
