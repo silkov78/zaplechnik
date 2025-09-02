@@ -6,6 +6,7 @@ services:
         volumes:
             - ./backend:/var/www/html
             - ./backend/docker/php/php.ini:/usr/local/etc/php/php.ini
+            - /var/www/html/vendor
         ports:
             - '8000:8000'
         networks:
@@ -27,7 +28,7 @@ services:
     postgis:
         image: 'postgis/postgis:17-3.5-alpine'
         ports:
-            - '${FORWARD_DB_PORT:-5432}:5432'
+            - '5432:5432'
         environment:
             POSTGRES_DB: 'zaplechnik_db'
             POSTGRES_USER: 'vandra'

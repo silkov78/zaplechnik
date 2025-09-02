@@ -1,10 +1,17 @@
 FROM php:8.4-fpm
 
+# User config
 ARG USER_ID=1000
 ARG GROUP_ID=1000
 ARG USERNAME=appuser
 
-# ROOT (System config) STAGE
+RUN groupadd -g $GROUP_ID $USERNAME && \
+    useradd -u $USER_ID -g $USERNAME -m $USERNAME
+
+
+# Dependencies install
+WORKDIR /var/www/html
+
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -21,20 +28,15 @@ RUN docker-php-ext-install pdo_pgsql mbstring exif pcntl bcmath gd
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-RUN groupadd -g $GROUP_ID $USERNAME && \
-    useradd -u $USER_ID -g $USERNAME -m $USERNAME
+COPY composer.json composer.lock ./
 
-WORKDIR /var/www/html
+RUN composer install --no-interaction --no-scripts
 
-COPY . /var/www/html
 
+# Owner to appuser
 RUN chown -R $USERNAME:$USERNAME /var/www/html
 
-
-# NON-Root (application) stage
 USER $USERNAME
-
-RUN composer install --no-interaction --no-dev --optimize-autoloader
 
 ENTRYPOINT ["bash", "docker/docker-entrypoint.sh"]
 
