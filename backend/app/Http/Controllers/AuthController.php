@@ -30,15 +30,14 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request): JsonResponse
     {
-        // TODO: Refactor login method
         $data = $request->validated();
 
         $user = User::where('email', $data['email'])->first();
 
         if (!$user || !Hash::check($data['password'], $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
+            return response()->json([
+                'message' => 'Invalid credentials',
+            ], 400);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
