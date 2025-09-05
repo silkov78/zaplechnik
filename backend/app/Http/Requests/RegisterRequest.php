@@ -11,11 +11,11 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => 'required|string|unique:users|max:50',
-            'email' => 'required|string|unique:users|email',
+            'email' => 'required|unique:users|email',
             'password' => [
                 'required',
-                'string',
                 Password::min(8)
+                    ->max(255)
                     ->letters()
                     ->numbers()
                     ->mixedCase()
