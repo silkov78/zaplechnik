@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Contracts\Validation\Validator;
 
 class RegisterRequest extends FormRequest
 {
@@ -21,5 +23,13 @@ class RegisterRequest extends FormRequest
                     ->mixedCase()
             ],
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new ValidationException($validator, response()->json([
+            'message' => 'Invalid request',
+            'errors' => $validator->errors()
+        ], 400));
     }
 }
