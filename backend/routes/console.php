@@ -12,4 +12,4 @@ Artisan::command('inspire', function () {
 // Scheduling
 
 // TODO: Config scheduler for deleting expired tokens from db
-//Schedule::command('sanctum:prune-expired --minutes=5')->everyFiveMinutes();
+Schedule::command('sanctum:prune-expired --hours=24')->daily();
