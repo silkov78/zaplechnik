@@ -27,5 +27,10 @@ fi
 # Run migrations and seed
 php artisan migrate:fresh --seed
 
+# Run scheduler daemon
+echo "ENTRYPOINT: Starting scheduler..."
+php artisan schedule:work &
+
 # Start the server
+echo "ENTRYPOINT: Starting Laravel server..."
 php artisan serve --host=0.0.0.0 --port=8000
