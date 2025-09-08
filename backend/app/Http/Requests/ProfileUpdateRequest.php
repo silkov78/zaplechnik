@@ -30,6 +30,7 @@ class ProfileUpdateRequest extends FormRequest
             'gender' => [new Enum(Gender::class)],
             'bio' => 'string|max:255',
             'telegram' => 'string|starts_with:@|max:100',
+            'is_private' => 'boolean',
         ];
     }
 }
