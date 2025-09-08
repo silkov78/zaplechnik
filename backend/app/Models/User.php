@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Gender;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -11,27 +12,17 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $primaryKey = 'user_id';
 
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'avatar',
-        'telegram',
-        'bio',
-    ];
-
-    protected $guarded = [
-        'visits_count',
+        'name', 'email', 'gender', 'password',
+        'avatar', 'telegram', 'bio', 'is_private',
     ];
 
     protected $hidden = [
-        'password',
-        'remember_token',
+        'password', 'remember_token', 'email_verified_at',
     ];
 
     protected function casts(): array
@@ -39,6 +30,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'gender' => Gender::class,
+            'is_private' => 'boolean',
         ];
     }
 
