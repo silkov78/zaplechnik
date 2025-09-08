@@ -1,5 +1,6 @@
 <?php
 
+use App\Gender;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,7 +15,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->renameColumn('id', 'user_id');
             $table->string('name', length: 50)->unique()->change();
-            $table->enum('gender', ['male', 'female'])->default('male');
+            $table->enum('gender', Gender::values())->nullable();
             $table->string('avatar')->nullable();
             $table->string('bio')->nullable();
             $table->string('telegram', length: 100)->nullable();
