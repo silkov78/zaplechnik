@@ -16,12 +16,27 @@ class ProfileController extends Controller
 
     public function update(ProfileUpdateRequest $request): JsonResponse
     {
+        // TODO: config saving avatar in laravel storage
         $data = $request->validated();
 
         $request->user()->update($data);
 
+        return response()->json(['data' => $data]);
+    }
+
+    public function destroy(Request $request): JsonResponse
+    {
+        // TODO: config deleting avatar in laravel storage
+        $user = $request->user();
+        $userId = $user->user_id;
+
+        $user->tokens()->delete();
+
+        $user->delete();
+
         return response()->json([
-            'data' => $data,
+            'message' => 'User successfully deleted an account.',
+            'info' => ['user_id' => $userId],
         ]);
     }
 }

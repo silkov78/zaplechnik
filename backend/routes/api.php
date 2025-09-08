@@ -17,7 +17,7 @@ Route::prefix('v1')->group(function () {
         Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/me', 'show')->name('me.show');
             Route::patch('/me', 'update')->name('me.update');
-//            Route::delete('/me', 'destroy')->name('me.destroy');
+            Route::delete('/me', 'destroy')->name('me.destroy');
         });
     });
 });
