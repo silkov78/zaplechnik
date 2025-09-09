@@ -18,7 +18,7 @@ class ProfileResource extends JsonResource
             'user_id' => $this->user_id,
             'name' => $this->name,
             'email' => $this->email,
-            'avatar' => $this->avatar,
+            'avatarUrl' => $this->avatarUrl,
             'gender' => $this->gender?->value,
             'telegram' => $this->telegram,
             'bio' => $this->bio,
