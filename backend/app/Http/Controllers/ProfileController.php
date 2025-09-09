@@ -6,6 +6,7 @@ use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Resources\ProfileResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -16,10 +17,27 @@ class ProfileController extends Controller
 
     public function update(ProfileUpdateRequest $request): JsonResponse
     {
-        // TODO: config saving avatar in laravel storage
         $data = $request->validated();
+        $user = $request->user();
+
+        if ($request->hasFile('avatar')) {
+            if ($user->avatar && Storage::exists('avatars/' . $user->avatar)) {
+                Storage::delete('avatars/' . $user->avatar);
+            }
+
+            $avatarFile = $request->file('avatar');
+            $avatarFileName = $avatarFile->hashName();
+            $avatarFile->storeAs('avatars', $avatarFileName);
+
+            $data['avatar'] = $avatarFileName;
+        }
 
         $request->user()->update($data);
+
+        if (isset($data['avatar'])) {
+            unset($data['avatar']);
+            $data['avatarUrl'] = $user->avatarUrl;
+        }
 
         return response()->json(['data' => $data]);
     }
