@@ -44,9 +44,12 @@ class ProfileController extends Controller
 
     public function destroy(Request $request): JsonResponse
     {
-        // TODO: config deleting avatar in laravel storage
         $user = $request->user();
         $userId = $user->user_id;
+
+        if ($user->avatar && Storage::exists('avatars/' . $user->avatar)) {
+            Storage::delete('avatars/' . $user->avatar);
+        }
 
         $user->tokens()->delete();
 
