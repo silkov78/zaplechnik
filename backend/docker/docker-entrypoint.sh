@@ -24,6 +24,9 @@ else
     echo "ENTRYPOINT: APP_KEY already exists in .env, skipping generation..."
 fi
 
+# Create symlink for storage
+php artisan storage:link
+
 # Run migrations and seed
 php artisan migrate:fresh --seed
 
