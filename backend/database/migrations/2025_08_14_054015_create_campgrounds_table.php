@@ -24,8 +24,11 @@ return new class extends Migration
             $table->string('osm_toilets', 15)->nullable();
             $table->string('osm_access', 100)->nullable();
             $table->string('firewood', 15)->nullable();
+            
+            // TODO: remove nullable from script_fields in new migration
             $table->string('script_region', 50)->nullable();
             $table->string('script_district', 50)->nullable();
+
             $table->timestamps();
         });
     }
