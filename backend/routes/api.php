@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CampgroundsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,5 +22,10 @@ Route::prefix('v1')->group(function () {
             Route::patch('/me', 'update')->name('me.update');
             Route::delete('/me', 'destroy')->name('me.destroy');
         });
+    });
+
+    // Campgrounds
+    Route::controller(CampgroundsController::class)->group(function () {
+        Route::get('/campgrounds', 'index')->name('campgrounds.index');
     });
 });
