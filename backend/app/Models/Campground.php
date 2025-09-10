@@ -12,21 +12,19 @@ class Campground extends Model
     protected $primaryKey = 'campground_id';
 
     protected $fillable = [
-        'coordinates',
-        'osm_id',
-        'name',
-        'description',
-        'website',
-        'fee',
+        'osm_id', 'osm_geometry', 'osm_name', 'osm_description',
+        'osm_website', 'osm_fee', 'osm_fireplace', 'osm_picnic_table',
+        'osm_toilets', 'osm_access',
+
         'firewood',
-        'fireplace',
-        'picnic_table',
-        'toilets',
-        'access',
+
+        // TODO: remove from fillable after bulk load
+        'script_region',
+        'script_district',
     ];
 
     protected $casts = [
-        'coordinates' => Point::class,
+        'osm_geometry' => Point::class,
     ];
 
     public function visits(): HasMany
