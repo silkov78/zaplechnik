@@ -13,17 +13,19 @@ return new class extends Migration
     {
         Schema::create('campgrounds', function (Blueprint $table) {
             $table->id('campground_id');
-            $table->magellanPoint('coordinates', 4326);
-            $table->string('osm_id', 20)->nullable();
-            $table->string('name')->nullable();
-            $table->text('description')->nullable();
-            $table->string('website')->nullable();
-            $table->string('fee', 100)->nullable();
+            $table->string('osm_id', 20);
+            $table->magellanPoint('osm_geometry', 4326);
+            $table->string('osm_name')->nullable();
+            $table->text('osm_description')->nullable();
+            $table->string('osm_website')->nullable();
+            $table->string('osm_fee', 100)->nullable();
+            $table->string('osm_fireplace', 15)->nullable();
+            $table->string('osm_picnic_table', 15)->nullable();
+            $table->string('osm_toilets', 15)->nullable();
+            $table->string('osm_access', 100)->nullable();
             $table->string('firewood', 15)->nullable();
-            $table->string('fireplace', 15)->nullable();
-            $table->string('picnic_table', 15)->nullable();
-            $table->string('toilets', 15)->nullable();
-            $table->string('access', 100)->nullable();
+            $table->string('script_region', 50)->nullable();
+            $table->string('script_district', 50)->nullable();
             $table->timestamps();
         });
     }
