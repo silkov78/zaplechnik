@@ -7,9 +7,11 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
     // Auth
     Route::controller(AuthController::class)->group(function () {
-        Route::post('/login','login')->name('login');
-        Route::post('/register','register')->name('register');
-        Route::post('/logout','logout')->name('logout')->middleware('auth:sanctum');
+        Route::post('/login','login')->name('auth.login');
+        Route::post('/register','register')->name('auth.register');
+        Route::post('/logout','logout')
+            ->name('auth.logout')
+            ->middleware('auth:sanctum');
     });
 
     // Profile
