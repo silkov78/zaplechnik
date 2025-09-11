@@ -19,7 +19,7 @@ class Visit extends Model
     ];
 
     protected $casts = [
-        'visit_date' => 'datetime',
+        'visit_date' => 'date',
     ];
 
     public function user(): BelongsTo
