@@ -3,6 +3,9 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CampgroundsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Resources\CampgroundCollection;
+use App\Http\Resources\CampgroundResource;
+use App\Models\Campground;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
