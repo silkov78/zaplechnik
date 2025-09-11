@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Concerns\GeneratesGeoJsonArray;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Resources\ProfileResource;
+use App\Http\Resources\StoreVisitResource;
 use App\Models\Campground;
+use App\Models\Visit;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -83,5 +85,19 @@ class ProfileController extends Controller
         );
 
         return response()->json($visitedCampgroundsArray);
+    }
+
+    public function storeVisit(Request $request): StoreVisitResource|JsonResponse
+    {
+        $data = $request->validate([
+            'campground_id' => 'required|integer|exists:campgrounds',
+            'visit_date' => 'date',
+        ]);
+
+        $data['user_id'] = $request->user()->user_id;
+
+        $visit = Visit::create($data);
+
+        return new StoreVisitResource($visit);
     }
 }
