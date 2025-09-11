@@ -2,20 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\GeneratesGeoJsonArray;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Resources\ProfileResource;
-use App\Models\Visit;
+use App\Models\Campground;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
+    use GeneratesGeoJsonArray;
+
     public function show(Request $request): ProfileResource
     {
         return new ProfileResource($request->user());
     }
 
+    /**
+     * Updates user's data
+     * Handles attached avatar photo
+     */
     public function update(ProfileUpdateRequest $request): JsonResponse
     {
         $data = $request->validated();
@@ -43,6 +50,10 @@ class ProfileController extends Controller
         return response()->json(['data' => $data]);
     }
 
+    /**
+     * Deletes user's data (account)
+     * Delete avatar photo from storage
+     */
     public function destroy(Request $request): JsonResponse
     {
         $user = $request->user();
@@ -62,32 +73,15 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function visitDestroy(Request $request): JsonResponse
+    /**
+     * Returns campgrounds visited by authenticated user
+     */
+    public function visitedCampgrounds(Request $request): JsonResponse
     {
-        $userId = $request->user()->user_id;
-        $query = $request->validate([
-            'campground_id' => 'required|integer|exists:campgrounds',
-        ]);
+        $visitedCampgroundsArray = $this->getFeatureCollectionArray(
+            $request->user()->campgrounds, 'osm_geometry'
+        );
 
-        $visit = Visit::where([
-            'user_id' => $userId,
-            'campground_id' => $query['campground_id'],
-        ]);
-
-        if (!$visit->exists()) {
-            return response()->json([
-                'message' => 'Visit with provided user_id and campground_id not found.',
-            ]);
-        }
-
-        $visit->delete();
-
-        return response()->json([
-            'message' => 'User successfully deleted a visit',
-            'info' => [
-                'user_id' => $userId,
-                'campground_id' => $query['campground_id'],
-            ],
-        ]);
+        return response()->json($visitedCampgroundsArray);
     }
 }
