@@ -16,18 +16,21 @@ Route::prefix('v1')->group(function () {
     });
 
     // Profile
-    Route::controller(ProfileController::class)->group(function () {
+    Route::controller(ProfileController::class)->prefix('me')->group(function () {
         Route::middleware(['auth:sanctum'])->group(function () {
-            // Profile
-            Route::get('/me', 'show')->name('me.show');
-            Route::patch('/me', 'update')->name('me.update');
-            Route::delete('/me', 'destroy')->name('me.destroy');
+            // Profile data
+            Route::get('/', 'show')->name('me.show');
+            Route::patch('/', 'update')->name('me.update');
+            Route::delete('/', 'destroy')->name('me.destroy');
 
-            // Visits
-            Route::delete('/me/visits', 'visitDestroy')->name('visits.destroy');
+            // Profile visits data
+            Route::get('/visits', 'visits')->name('me.visits');
+            Route::post('/visits', 'storeVisit')->name('me.visits.store');
+            Route::delete('/visits/{visit}', 'destroyVisit')->name('me.visits.destroy');
         });
     });
 
+    // Campgrounds
     Route::controller(CampgroundsController::class)->group(function () {
         Route::get('/campgrounds', 'index')->name('campgrounds.index');
     });
