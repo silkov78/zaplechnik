@@ -28,6 +28,8 @@ trait GeneratesGeoJsonArray
             'features' => $modelCollection->map(function ($feature) use ($geometryField) {
                 $featureProperties = $feature->toArray();
                 unset($featureProperties[$geometryField]);
+                unset($featureProperties['created_at']);
+                unset($featureProperties['updated_at']);
 
                 return [
                     'type' => 'Feature',
