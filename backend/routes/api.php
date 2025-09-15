@@ -28,7 +28,7 @@ Route::prefix('v1')->group(function () {
 
             // Visits
             Route::post('/visits', 'storeVisit')->name('visits.store');
-            Route::delete('/visits/{visit}', 'destroyVisit')->name('visits.destroy');
+            Route::delete('/visits', 'destroyVisit')->name('visits.destroy');
         });
     });
 
