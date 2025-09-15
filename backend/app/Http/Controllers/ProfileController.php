@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Resources\ProfileResource;
+use App\Models\Visit;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -58,6 +59,35 @@ class ProfileController extends Controller
         return response()->json([
             'message' => 'User successfully deleted an account.',
             'info' => ['user_id' => $userId],
+        ]);
+    }
+
+    public function visitDestroy(Request $request): JsonResponse
+    {
+        $userId = $request->user()->user_id;
+        $query = $request->validate([
+            'campground_id' => 'required|integer|exists:campgrounds',
+        ]);
+
+        $visit = Visit::where([
+            'user_id' => $userId,
+            'campground_id' => $query['campground_id'],
+        ]);
+
+        if (!$visit->exists()) {
+            return response()->json([
+                'message' => 'Visit with provided user_id and campground_id not found.',
+            ]);
+        }
+
+        $visit->delete();
+
+        return response()->json([
+            'message' => 'User successfully deleted a visit',
+            'info' => [
+                'user_id' => $userId,
+                'campground_id' => $query['campground_id'],
+            ],
         ]);
     }
 }
