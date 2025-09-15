@@ -24,6 +24,14 @@ class LoginRequest extends FormRequest
         ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'email.required' => 'Parameter “email” is required. The entered email does not exist',
+            'password.required' => 'Parameter “password” is required. Incorrect password entered',
+        ];
+    }
+
     protected function failedValidation(Validator $validator)
     {
         throw new ValidationException($validator, response()->json([
