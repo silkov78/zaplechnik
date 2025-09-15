@@ -100,4 +100,33 @@ class ProfileController extends Controller
 
         return new StoreVisitResource($visit);
     }
+
+    public function destroyVisit(Request $request): JsonResponse
+    {
+        $userId = $request->user()->user_id;
+        $query = $request->validate([
+            'campground_id' => 'required|integer|exists:campgrounds',
+        ]);
+
+        $visit = Visit::where([
+            'user_id' => $userId,
+            'campground_id' => $query['campground_id'],
+        ]);
+
+        if (!$visit->exists()) {
+            return response()->json([
+                'message' => 'Visit with provided user_id and campground_id not found.',
+            ]);
+        }
+
+        $visit->delete();
+
+        return response()->json([
+            'message' => 'User successfully deleted a visit',
+            'info' => [
+                'user_id' => $userId,
+                'campground_id' => $query['campground_id'],
+            ],
+        ]);
+    }
 }
