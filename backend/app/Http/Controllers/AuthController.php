@@ -34,9 +34,19 @@ class AuthController extends Controller
 
         $user = User::where('email', $data['email'])->first();
 
-        if (!$user || !Hash::check($data['password'], $user->password)) {
+        if (!$user) {
             return response()->json([
-                'message' => 'Invalid credentials',
+                'message' => 'Invalid request',
+                'errors' => [
+                    'email' => 'Parameter “email” is required. The entered email does not exist',
+                ]
+            ], 400);
+        }
+
+        if (!Hash::check($data['password'], $user->password)) {
+            return response()->json([
+                'message' => 'Invalid request',
+                'errors' => 'Parameter “password” is required. Incorrect password entered',
             ], 400);
         }
 
