@@ -6,7 +6,6 @@ use App\Http\Controllers\Concerns\GeneratesGeoJsonArray;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Resources\ProfileResource;
 use App\Http\Resources\StoreVisitResource;
-use App\Models\Campground;
 use App\Models\Visit;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -87,6 +86,10 @@ class ProfileController extends Controller
         return response()->json($visitedCampgroundsArray);
     }
 
+    /**
+     * Stores new visit record
+     * Each visit has unique pair of user_id and campground_id
+     */
     public function storeVisit(Request $request): StoreVisitResource|JsonResponse
     {
         $data = $request->validate([
@@ -101,6 +104,10 @@ class ProfileController extends Controller
         return new StoreVisitResource($visit);
     }
 
+    /**
+     * Destroys visit record
+     * Accepts required campground_id from query string
+     */
     public function destroyVisit(Request $request): JsonResponse
     {
         $userId = $request->user()->user_id;
