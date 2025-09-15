@@ -17,6 +17,7 @@ class ProfileResource extends JsonResource
         return [
             'user_id' => $this->user_id,
             'name' => $this->name,
+            'rank' => $this->getRank(),
             'email' => $this->email,
             'avatarUrl' => $this->avatarUrl,
             'gender' => $this->gender?->value,
