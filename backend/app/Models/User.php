@@ -51,6 +51,23 @@ class User extends Authenticatable
         );
     }
 
+    public function getRank(): string
+    {
+        if ($this->gender === Gender::FEMALE) {
+            return match (true) {
+                $this->visits_count < 5 => 'домоседка',
+                $this->visits_count < 10 => 'туристка',
+                default => 'домоседка',
+            };
+        }
+
+        return match (true) {
+            $this->visits_count < 5 => 'домосед',
+            $this->visits_count < 10 => 'турист',
+            default => 'домосед',
+        };
+    }
+
     protected function avatarUrl(): Attribute
     {
         return Attribute::make(
