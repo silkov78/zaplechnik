@@ -24,6 +24,7 @@ class CampgroundSeeder extends Seeder
             'picnic_table' => 'osm_picnic_table',
             'toilets' => 'osm_toilets',
             'access' => 'osm_access',
+            'image' => 'osm_image',
         ];
 
         foreach ($featuresArray as $feature) {

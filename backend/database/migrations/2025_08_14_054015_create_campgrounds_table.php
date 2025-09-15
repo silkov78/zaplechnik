@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('osm_picnic_table', 15)->nullable();
             $table->string('osm_toilets', 15)->nullable();
             $table->string('osm_access', 100)->nullable();
+            $table->text('osm_image')->nullable();
             $table->string('firewood', 15)->nullable();
             
             // TODO: remove nullable from script_fields in new migration
