@@ -25,6 +25,17 @@ class RegisterRequest extends FormRequest
         ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'name' => 'Parameter “name” is required and unique. It must be a string and less than 50 characters',
+            'email' => 'Parameter “email” is required and unique. It must be a string and less than 255 characters',
+            'password' => 'Parameter “password” is required. ' .
+                          'It must be a string of more than 8 characters, but no more than 255 characters. ' .
+                          'It must contain uppercase and lowercase letters of the Latin alphabet and at least one digit',
+        ];
+    }
+
     protected function failedValidation(Validator $validator)
     {
         throw new ValidationException($validator, response()->json([
