@@ -94,7 +94,7 @@ class ProfileController extends Controller
     {
         $data = $request->validate([
             'campground_id' => 'required|integer|exists:campgrounds',
-            'visit_date' => 'date',
+            'visit_date' => 'date:Y-m-d',
         ]);
 
         $data['user_id'] = $request->user()->user_id;
