@@ -14,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'tokenValidation' => \App\Http\Middleware\CustomTokenAuth::class,
+            'custom.auth' => \App\Http\Middleware\CustomAuthMiddleware::class,
         ]);
 
         $middleware->append(ForceJsonRequestHeader::class);
