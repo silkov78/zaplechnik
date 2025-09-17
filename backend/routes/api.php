@@ -12,12 +12,12 @@ Route::prefix('v1')->group(function () {
         Route::post('/register','register')->name('auth.register');
         Route::post('/logout','logout')
             ->name('auth.logout')
-            ->middleware(['tokenValidation', 'auth:sanctum']);
+            ->middleware('custom.auth');
     });
 
     // Profile
     Route::controller(ProfileController::class)->prefix('me')->name('me')->group(function () {
-        Route::middleware(['tokenValidation'])->group(function () {
+        Route::middleware('custom.auth')->group(function () {
             // Profile data
             Route::get('/', 'show')->name('show');
             Route::patch('/', 'update')->name('update');
