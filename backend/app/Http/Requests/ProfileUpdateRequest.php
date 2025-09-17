@@ -44,7 +44,7 @@ class ProfileUpdateRequest extends FormRequest
             'gender' => 'Parameter “gender” must be female or male.',
             'bio' => 'Parameter “bio”  must be less than 255 characters.',
             'telegram' => 'Parameter “telegram”  must must start with the character “@” and less than 100 characters.',
-            'is_private' => 'Parmeter “is_private” must be boolean.',
+            'is_private' => 'Parameter “is_private” must be boolean.',
         ];
     }
 }
