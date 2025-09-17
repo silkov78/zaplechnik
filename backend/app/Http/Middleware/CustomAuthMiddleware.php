@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Laravel\Sanctum\PersonalAccessToken;
 use Symfony\Component\HttpFoundation\Response;
 
-class CustomTokenAuth
+class CustomAuthMiddleware
 {
     /**
      * Handle an incoming request.
@@ -17,39 +17,41 @@ class CustomTokenAuth
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // 1. Проверяем наличие заголовка Authorization
+        // 1. Check authorization header
         $authToken = $request->bearerToken();
 
         if (!$authToken) {
             return response()->json([
-                'error' => 'Authentication Required',
-                'message' => 'Отсутствует токен авторизации. Необходимо передать заголовок Authorization: Bearer {token}',
-                'code' => 'TOKEN_MISSING'
+                'message' => 'Unauthorized',
+                'errors' => [
+                    'token' => 'Authorization token is missing.',
+                ],
             ], 401);
         }
 
-        // 2. Ищем токен в БД
+        // 2. Token validation
         $tokenRecord = PersonalAccessToken::findToken($authToken);
 
         if (!$tokenRecord) {
             return response()->json([
-                'error' => 'Invalid Token',
-                'message' => 'Предоставленный токен недействителен или не существует',
-                'code' => 'TOKEN_INVALID'
+                'message' => 'Unauthorized',
+                'errors' => [
+                    'token' => 'Authentication token is malformed.',
+                ],
             ], 401);
         }
 
-        // 3. Проверяем срок действия токена
+        // 3. Check token expiration
         if ($tokenRecord->expires_at && Carbon::parse($tokenRecord->expires_at)->isPast()) {
             return response()->json([
-                'error' => 'Token Expired',
-                'message' => 'Срок действия токена истёк. Необходимо получить новый токен',
-                'code' => 'TOKEN_EXPIRED',
-                'expired_at' => $tokenRecord->expires_at
+                'message' => 'Unauthorized',
+                'errors' => [
+                    'token' => 'Your session has expired. Please log in again',
+                ],
             ], 401);
         }
 
-        // 4. Получаем пользователя из токена
+        // 4. Get user from token
         $user = $tokenRecord->tokenable;
 
         if (!$user) {
@@ -60,19 +62,19 @@ class CustomTokenAuth
             ], 401);
         }
 
-        // 5. Устанавливаем пользователя как аутентифицированного
+        // 5. Set user as authenticated
         auth()->setUser($user);
 
-        // 6. Устанавливаем resolver для request
+        // 6. Add user in request
         $request->setUserResolver(function () use ($user) {
             return $user;
         });
 
-        // 7. Добавляем токен к пользователю (как это делает Sanctum)
+        // 7. Add token to user
         $user->withAccessToken($tokenRecord);
 
 
-        // Токен валидный, продолжаем выполнение
+        // Next middleware
         return $next($request);
     }
 }
