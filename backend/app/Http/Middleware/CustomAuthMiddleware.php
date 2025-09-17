@@ -24,6 +24,7 @@ class CustomAuthMiddleware
             return response()->json([
                 'message' => 'Unauthorized',
                 'errors' => [
+                    'code' => 'MISSING_TOKEN',
                     'token' => 'Authorization token is missing.',
                 ],
             ], 401);
@@ -36,6 +37,7 @@ class CustomAuthMiddleware
             return response()->json([
                 'message' => 'Unauthorized',
                 'errors' => [
+                    'code' => 'INVALID_TOKEN',
                     'token' => 'Authentication token is malformed.',
                 ],
             ], 401);
@@ -46,6 +48,7 @@ class CustomAuthMiddleware
             return response()->json([
                 'message' => 'Unauthorized',
                 'errors' => [
+                    'code' => 'EXPIRED_TOKEN',
                     'token' => 'Your session has expired. Please log in again',
                 ],
             ], 401);
@@ -55,10 +58,13 @@ class CustomAuthMiddleware
         $user = $tokenRecord->tokenable;
 
         if (!$user) {
+
             return response()->json([
-                'error' => 'Invalid Token',
-                'message' => 'Токен не связан с действующим пользователем',
-                'code' => 'TOKEN_NO_USER'
+                'message' => 'Unauthorized',
+                'errors' => [
+                    'code' => 'INVALID_TOKEN',
+                    'token' => 'Token is not connected with current user.',
+                ],
             ], 401);
         }
 
