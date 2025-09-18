@@ -4,7 +4,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-describe('auth', function () {
+describe('registration process', function () {
     it('creates user successfully', function () {
         $userData = [
             'name' => 'petya',
