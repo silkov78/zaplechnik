@@ -5,18 +5,20 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 describe('auth', function () {
-    it('creates user', function () {
+    it('creates user successfully', function () {
         $userData = [
             'name' => 'petya',
             'email' => 'petya@example.com',
-            'password' => 'password',
+            'password' => 'Password4',
         ];
 
         $response = $this->postJson('/api/v1/register', $userData);
 
         $response->assertStatus(201)
             ->assertJson([
-                'data' => [
+                'message' => 'User created successfully',
+                'user' => [
+                    'user_id' => 1,
                     'name' => 'petya',
                     'email' => 'petya@example.com'
                 ]
