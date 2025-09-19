@@ -2,7 +2,6 @@
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
 
 uses(RefreshDatabase::class);
 
@@ -16,15 +15,19 @@ describe('registration', function () {
 
         $response = $this->postJson('/api/v1/register', $userData);
 
-        $response->assertStatus(201)
-            ->assertJson([
-                'message' => 'User created successfully',
-                'user' => [
-                    'user_id' => 1,
-                    'name' => 'petya',
-                    'email' => 'petya@example.com'
-                ]
-            ]);
+        $response->assertStatus(201)->assertJson([
+            'message' => 'User created successfully',
+            'user' => [
+                'user_id' => 1,
+                'name' => 'petya',
+                'email' => 'petya@example.com'
+            ]
+        ]);
+
+        $this->assertDatabaseHas('users', [
+            'name' => 'petya',
+            'email' => 'petya@example.com'
+        ]);
     });
 
     it('rejects empty credentials', function ($invalidData) {
