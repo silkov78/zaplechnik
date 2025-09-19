@@ -46,18 +46,26 @@ describe('registration process', function () {
             'name' => 'testUser',
         ]);
 
-        $validResponsePart = ['email' => 'piotr@example.com', 'password' => 'Silkov78'];
-        $responseArray = array_merge($validResponsePart, ['name' => $invalidName]);
+        $userData = [
+            'name' => $invalidName,
+            'email' => 'piotr@example.com',
+            'password' => 'Silkov78'
+        ];
 
-        $response = $this->postJson('/api/v1/register', $responseArray);
+        $response = $this->postJson('/api/v1/register', $userData);
 
-        $response->assertStatus(400)->assertJsonFragment([
+        // TODO: remove square brackets and refactor associated endpoint message
+        $response->assertStatus(400)->assertJson([
             'message' => 'Invalid request',
+            'errors' => [
+                'name' => ['Parameter “name” is required and unique. It must be a string and less than 50 characters'],
+            ],
         ]);
     })->with([
         'empty name' => '',
         'not string name' => 1,
-        '> 255 symbols name' => str_repeat('A', 300),
+        '> 50 symbols name' => str_repeat('A', 51),
         'existing name' => 'testUser',
     ]);
+    
 });
