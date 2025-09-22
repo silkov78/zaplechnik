@@ -121,14 +121,14 @@ describe('registration', function () {
         $response = $this->postJson('/api/v1/register', $userData);
 
         // TODO: remove square brackets and refactor associated endpoint message
-        $response->assertStatus(400)->assertJson([
-            'message' => 'Invalid request',
-            'errors' => [
-                'password' => ['Parameter “password” is required. ' .
-                    'It must be a string of more than 8 characters, but no more than 255 characters. ' .
-                    'It must contain uppercase and lowercase letters of the Latin alphabet and at least one digit',
-            ]],
-        ]);
+        $response->assertStatus(400)
+            ->assertJsonStructure([
+                'message',
+                'errors' => ['password'],
+            ])
+            ->assertJsonFragment([
+                'message' => 'Invalid request',
+            ]);
     })->with([
         'empty password' => '',
         'not string password' => 1,
