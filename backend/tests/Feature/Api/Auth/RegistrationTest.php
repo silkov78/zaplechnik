@@ -38,9 +38,14 @@ describe('registration', function () {
     it('rejects empty credentials', function ($invalidData) {
         $response = $this->postJson('/api/v1/register', $invalidData);
 
-        $response->assertStatus(400)->assertJsonFragment([
-            'message' => 'Invalid request',
-        ]);
+        $response->assertStatus(400)
+            ->assertJsonStructure([
+                'message',
+                'errors' => [],
+            ])
+            ->assertJsonFragment([
+                'message' => 'Invalid request',
+            ]);
     })->with([
         'missing credentials' => [[]],
         'missing name' => [['email' => 'piotr@example.com', 'password' => 'Silkov78']],
