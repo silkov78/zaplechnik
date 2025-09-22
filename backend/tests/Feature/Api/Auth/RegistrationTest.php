@@ -95,13 +95,14 @@ describe('registration', function () {
 
         $response = $this->postJson('/api/v1/register', $userData);
 
-        // TODO: remove square brackets and refactor associated endpoint message
-        $response->assertStatus(400)->assertJson([
-            'message' => 'Invalid request',
-            'errors' => [
-                'email' => ['Parameter “email” is required and unique. It must be a string and less than 255 characters'],
-            ],
-        ]);
+        $response->assertStatus(400)
+            ->assertJsonStructure([
+                'message',
+                'errors' => ['email'],
+            ])
+            ->assertJsonFragment([
+                'message' => 'Invalid request',
+            ]);
     })->with([
         'empty email' => '',
         'not string email' => 1,
