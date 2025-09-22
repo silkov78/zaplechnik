@@ -120,7 +120,6 @@ describe('registration', function () {
 
         $response = $this->postJson('/api/v1/register', $userData);
 
-        // TODO: remove square brackets and refactor associated endpoint message
         $response->assertStatus(400)
             ->assertJsonStructure([
                 'message',

@@ -32,18 +32,18 @@ describe('login', function () {
 
         $user = User::where(['email' => $this->credentials['email']])->first();
 
-        $response->assertStatus(200)->assertJsonFragment([
-            'message' => 'User successfully login'
-        ]);
-
-        $response->assertJsonStructure([
-            'message',
-            'info' => [
-                'token',
-                'user_id',
-                'expires_in',
-            ]
-        ]);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+                'info' => [
+                    'token',
+                    'user_id',
+                    'expires_in',
+                ],
+            ])
+            ->assertJsonFragment([
+                'message' => 'User successfully login'
+            ]);
 
         expect($response->json()['info']['token'])->not()->toBeEmpty();
     });
