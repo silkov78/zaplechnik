@@ -25,13 +25,14 @@ describe('registration', function () {
             'email' => 'petya@example.com'
         ]);
 
-        $response->assertStatus(201)->assertJson([
-            'message' => 'User created successfully',
-            'user' => [
-                'name' => 'petya',
-                'email' => 'petya@example.com'
-            ]
-        ]);
+        $response->assertStatus(201)
+            ->assertJsonStructure([
+                'message',
+                'user' => ['id', 'name', 'email'],
+            ])
+            ->assertJsonFragment([
+                'message' => 'User created registered'
+            ]);
     });
 
     it('rejects empty credentials', function ($invalidData) {
