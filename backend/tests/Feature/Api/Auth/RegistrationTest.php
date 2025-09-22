@@ -28,10 +28,10 @@ describe('registration', function () {
         $response->assertStatus(201)
             ->assertJsonStructure([
                 'message',
-                'user' => ['id', 'name', 'email'],
+                'user' => ['user_id', 'name', 'email'],
             ])
             ->assertJsonFragment([
-                'message' => 'User created registered'
+                'message' => 'User successfully registered'
             ]);
     });
 
