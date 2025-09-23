@@ -37,7 +37,7 @@ return [
     'confirmed' => 'The :attribute field confirmation does not match.',
     'contains' => 'The :attribute field is missing a required value.',
     'current_password' => 'The password is incorrect.',
-    'date' => 'The :attribute field must be a valid date.',
+//    'date' => 'The :attribute field must be a valid date.',
     'date_equals' => 'The :attribute field must be a date equal to :date.',
     'date_format' => 'The :attribute field must match the format :format.',
     'decimal' => 'The :attribute field must have :decimal decimal places.',
@@ -175,6 +175,10 @@ return [
     'boolean' => [
         'code' => 'boolean',
         'message' => 'The :attribute field must be true or false.',
+    ],
+    'date' => [
+        'code' => 'date',
+        'message' => 'The :attribute field must be a valid date.',
     ],
     'email' => [
         'code' => 'email',
