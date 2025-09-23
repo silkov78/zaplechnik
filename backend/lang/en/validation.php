@@ -32,7 +32,7 @@ return [
         'numeric' => 'The :attribute field must be between :min and :max.',
         'string' => 'The :attribute field must be between :min and :max characters.',
     ],
-    'boolean' => 'The :attribute field must be true or false.',
+//    'boolean' => 'The :attribute field must be true or false.',
     'can' => 'The :attribute field contains an unauthorized value.',
     'confirmed' => 'The :attribute field confirmation does not match.',
     'contains' => 'The :attribute field is missing a required value.',
@@ -46,17 +46,17 @@ return [
     'different' => 'The :attribute field and :other must be different.',
     'digits' => 'The :attribute field must be :digits digits.',
     'digits_between' => 'The :attribute field must be between :min and :max digits.',
-    'dimensions' => 'The :attribute field has invalid image dimensions.',
+//    'dimensions' => 'The :attribute field has invalid image dimensions.',
     'distinct' => 'The :attribute field has a duplicate value.',
     'doesnt_contain' => 'The :attribute field must not contain any of the following: :values.',
     'doesnt_end_with' => 'The :attribute field must not end with one of the following: :values.',
     'doesnt_start_with' => 'The :attribute field must not start with one of the following: :values.',
-    'email' => 'The :attribute field must be a valid email address.',
+//    'email' => 'The :attribute field must be a valid email address.',
     'ends_with' => 'The :attribute field must end with one of the following: :values.',
-    'enum' => 'The selected :attribute is invalid.',
+//    'enum' => 'The selected :attribute is invalid.',
     'exists' => 'The selected :attribute is invalid.',
     'extensions' => 'The :attribute field must have one of the following extensions: :values.',
-    'file' => 'The :attribute field must be a file.',
+//    'file' => 'The :attribute field must be a file.',
     'filled' => 'The :attribute field must have a value.',
     'gt' => [
         'array' => 'The :attribute field must have more than :value items.',
@@ -71,7 +71,7 @@ return [
         'string' => 'The :attribute field must be greater than or equal to :value characters.',
     ],
     'hex_color' => 'The :attribute field must be a valid hexadecimal color.',
-    'image' => 'The :attribute field must be an image.',
+//    'image' => 'The :attribute field must be an image.',
     'in' => 'The selected :attribute is invalid.',
     'in_array' => 'The :attribute field must exist in :other.',
     'in_array_keys' => 'The :attribute field must contain at least one of the following keys: :values.',
@@ -95,14 +95,14 @@ return [
         'string' => 'The :attribute field must be less than or equal to :value characters.',
     ],
     'mac_address' => 'The :attribute field must be a valid MAC address.',
-    'max' => [
-        'array' => 'The :attribute field must not have more than :max items.',
-        'file' => 'The :attribute field must not be greater than :max kilobytes.',
-        'numeric' => 'The :attribute field must not be greater than :max.',
-        'string' => 'The :attribute field must not be greater than :max characters.',
-    ],
+//    'max' => [
+//        'array' => 'The :attribute field must not have more than :max items.',
+//        'file' => 'The :attribute field must not be greater than :max kilobytes.',
+//        'numeric' => 'The :attribute field must not be greater than :max.',
+//        'string' => 'The :attribute field must not be greater than :max characters.',
+//    ],
     'max_digits' => 'The :attribute field must not have more than :max digits.',
-    'mimes' => 'The :attribute field must be a file of type: :values.',
+//    'mimes' => 'The :attribute field must be a file of type: :values.',
     'mimetypes' => 'The :attribute field must be a file of type: :values.',
     'min' => [
         'array' => 'The :attribute field must have at least :min items.',
@@ -120,13 +120,13 @@ return [
     'not_in' => 'The selected :attribute is invalid.',
     'not_regex' => 'The :attribute field format is invalid.',
     'numeric' => 'The :attribute field must be a number.',
-    'password' => [
-        'letters' => 'The :attribute field must contain at least one letter.',
-        'mixed' => 'The :attribute field must contain at least one uppercase and one lowercase letter.',
-        'numbers' => 'The :attribute field must contain at least one number.',
-        'symbols' => 'The :attribute field must contain at least one symbol.',
-        'uncompromised' => 'The given :attribute has appeared in a data leak. Please choose a different :attribute.',
-    ],
+//    'password' => [
+//        'letters' => 'The :attribute field must contain at least one letter.',
+//        'mixed' => 'The :attribute field must contain at least one uppercase and one lowercase letter.',
+//        'numbers' => 'The :attribute field must contain at least one number.',
+//        'symbols' => 'The :attribute field must contain at least one symbol.',
+//        'uncompromised' => 'The given :attribute has appeared in a data leak. Please choose a different :attribute.',
+//    ],
     'present' => 'The :attribute field must be present.',
     'present_if' => 'The :attribute field must be present when :other is :value.',
     'present_unless' => 'The :attribute field must be present unless :other is :value.',
@@ -139,7 +139,7 @@ return [
     'prohibited_unless' => 'The :attribute field is prohibited unless :other is in :values.',
     'prohibits' => 'The :attribute field prohibits :other from being present.',
     'regex' => 'The :attribute field format is invalid.',
-    'required' => 'The :attribute field is required.',
+//    'required' => 'The :attribute field is required.',
     'required_array_keys' => 'The :attribute field must contain entries for: :values.',
     'required_if' => 'The :attribute field is required when :other is :value.',
     'required_if_accepted' => 'The :attribute field is required when :other is accepted.',
@@ -156,15 +156,102 @@ return [
         'numeric' => 'The :attribute field must be :size.',
         'string' => 'The :attribute field must be :size characters.',
     ],
-    'starts_with' => 'The :attribute field must start with one of the following: :values.',
-    'string' => 'The :attribute field must be a string.',
+//    'starts_with' => 'The :attribute field must start with one of the following: :values.',
+//    'string' => 'The :attribute field must be a string.',
     'timezone' => 'The :attribute field must be a valid timezone.',
-    'unique' => 'The :attribute has already been taken.',
+//    'unique' => 'The :attribute has already been taken.',
     'uploaded' => 'The :attribute failed to upload.',
     'uppercase' => 'The :attribute field must be uppercase.',
     'url' => 'The :attribute field must be a valid URL.',
     'ulid' => 'The :attribute field must be a valid ULID.',
     'uuid' => 'The :attribute field must be a valid UUID.',
+
+    /**
+     * ===========================================================
+     * My redefined messages
+     * ===========================================================
+     */
+
+    'boolean' => [
+        'code' => 'boolean',
+        'message' => 'The :attribute field must be true or false.',
+    ],
+    'email' => [
+        'code' => 'email',
+        'message' => 'The :attribute field must be a valid email address.',
+    ],
+    'enum' => [
+        'code' => 'enum',
+        'message' => 'The selected :attribute is invalid.',
+    ],
+    'file' => [
+        'code' => 'file',
+        'message' => 'The :attribute field must be a file.',
+    ],
+    'image' => [
+        'code' => 'image',
+        'message' => 'The :attribute field must be an image.',
+    ],
+    'max' => [
+        'array' => [
+            'code' => 'max',
+            'message' => 'The :attribute field must not have more than :max items.',
+        ],
+        'file' => [
+            'code' => 'max',
+            'message' => 'The :attribute field must not be greater than :max kilobytes.',
+        ],
+        'numeric' => [
+            'code' => 'max',
+            'message' => 'The :attribute field must not be greater than :max.',
+        ],
+        'string' => [
+            'code' => 'max',
+            'message' => 'The :attribute field must not be greater than :max characters.',
+        ],
+    ],
+    'mimes' => [
+        'code' => 'mimes',
+        'message' => 'The :attribute field must be a file of type: :values.',
+    ],
+    'password' => [
+        'letters' => [
+            'code' => 'letters',
+            'message' => 'The :attribute field must contain at least one letter.',
+        ],
+        'mixed' => [
+            'code' => 'mixed',
+            'message' => 'The :attribute field must contain at least one uppercase and one lowercase letter.',
+        ],
+        'numbers' => [
+            'code' => 'numbers',
+            'message' => 'The :attribute field must contain at least one number.',
+        ],
+        'symbols' => [
+            'code' => 'symbols',
+            'message' => 'The :attribute field must contain at least one symbol.',
+        ],
+        'uncompromised' => [
+            'code' => 'uncompromised',
+            'message' => 'The given :attribute has appeared in a data leak. Please choose a different :attribute.',
+        ],
+    ],
+    'required' => [
+        'code' => 'required',
+        'message' => 'The :attribute field is required.',
+    ],
+    'starts_with' => [
+        'code' => 'starts_with',
+        'message' => 'The :attribute field must start with one of the following: :values.',
+    ],
+    'string' => [
+        'code' => 'string',
+        'message' => 'The :attribute field must be a string.',
+    ],
+    'unique' => [
+        'code' => 'unique',
+        'message' => 'The :attribute has already been taken.',
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -181,6 +268,12 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'gender' => [
+            'enum' => [
+                'code' => 'enum',
+                'message' => 'The selected :attribute must be female or male.',
+            ]
+        ]
     ],
 
     /*
