@@ -54,7 +54,7 @@ return [
 //    'email' => 'The :attribute field must be a valid email address.',
     'ends_with' => 'The :attribute field must end with one of the following: :values.',
 //    'enum' => 'The selected :attribute is invalid.',
-    'exists' => 'The selected :attribute is invalid.',
+//    'exists' => 'The selected :attribute is invalid.',
     'extensions' => 'The :attribute field must have one of the following extensions: :values.',
 //    'file' => 'The :attribute field must be a file.',
     'filled' => 'The :attribute field must have a value.',
@@ -75,7 +75,7 @@ return [
     'in' => 'The selected :attribute is invalid.',
     'in_array' => 'The :attribute field must exist in :other.',
     'in_array_keys' => 'The :attribute field must contain at least one of the following keys: :values.',
-    'integer' => 'The :attribute field must be an integer.',
+//    'integer' => 'The :attribute field must be an integer.',
     'ip' => 'The :attribute field must be a valid IP address.',
     'ipv4' => 'The :attribute field must be a valid IPv4 address.',
     'ipv6' => 'The :attribute field must be a valid IPv6 address.',
@@ -195,6 +195,10 @@ return [
     'image' => [
         'code' => 'image',
         'message' => 'The :attribute field must be an image.',
+    ],
+    'integer' => [
+        'code' => 'integer',
+        'message' => 'The :attribute field must be an integer.',
     ],
     'max' => [
         'array' => [
