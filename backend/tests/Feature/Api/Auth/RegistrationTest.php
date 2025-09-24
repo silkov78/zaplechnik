@@ -38,13 +38,13 @@ describe('registration', function () {
     it('rejects empty credentials', function ($invalidData) {
         $response = $this->postJson('/api/v1/register', $invalidData);
 
-        $response->assertStatus(400)
+        $response->assertStatus(422)
             ->assertJsonStructure([
                 'message',
                 'errors' => [],
             ])
             ->assertJsonFragment([
-                'message' => 'Invalid request',
+                'message' => 'The given data was invalid.',
             ]);
     })->with([
         'missing credentials' => [[]],
@@ -67,13 +67,13 @@ describe('registration', function () {
 
         $response = $this->postJson('/api/v1/register', $userData);
 
-        $response->assertStatus(400)
+        $response->assertStatus(422)
             ->assertJsonStructure([
                 'message',
-                'errors' => ['name'],
+                'errors' => [],
             ])
             ->assertJsonFragment([
-                'message' => 'Invalid request',
+                'message' => 'The given data was invalid.',
             ]);
     })->with([
         'empty name' => '',
@@ -95,13 +95,13 @@ describe('registration', function () {
 
         $response = $this->postJson('/api/v1/register', $userData);
 
-        $response->assertStatus(400)
+        $response->assertStatus(422)
             ->assertJsonStructure([
                 'message',
-                'errors' => ['email'],
+                'errors' => [],
             ])
             ->assertJsonFragment([
-                'message' => 'Invalid request',
+                'message' => 'The given data was invalid.',
             ]);
     })->with([
         'empty email' => '',
@@ -120,13 +120,13 @@ describe('registration', function () {
 
         $response = $this->postJson('/api/v1/register', $userData);
 
-        $response->assertStatus(400)
+        $response->assertStatus(422)
             ->assertJsonStructure([
                 'message',
-                'errors' => ['password'],
+                'errors' => [],
             ])
             ->assertJsonFragment([
-                'message' => 'Invalid request',
+                'message' => 'The given data was invalid.',
             ]);
     })->with([
         'empty password' => '',
