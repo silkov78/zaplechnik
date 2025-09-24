@@ -50,4 +50,11 @@ describe('logout', function () {
 
         $response->assertStatus(401);
     });
+
+    it('rejects user with invalid token', function () {
+        $response = $this->withHeader('Authorization', 'Bearer: HakunaMatata')
+            ->postJson('/api/v1/logout');
+
+        $response->assertStatus(401);
+    });
 });
