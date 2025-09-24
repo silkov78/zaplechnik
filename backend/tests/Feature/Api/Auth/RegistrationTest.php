@@ -31,7 +31,7 @@ describe('registration', function () {
                 'user' => ['user_id', 'name', 'email'],
             ])
             ->assertJsonFragment([
-                'message' => 'User successfully registered'
+                'message' => 'User successfully registered.'
             ]);
     });
 

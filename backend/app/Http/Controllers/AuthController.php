@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -23,7 +22,7 @@ class AuthController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'User successfully registered',
+            'message' => 'User successfully registered.',
             'user' => $user->only('user_id', 'name', 'email'),
         ], 201);
     }
