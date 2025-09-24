@@ -12,12 +12,12 @@ Route::prefix('v1')->group(function () {
         Route::post('/register','register')->name('auth.register');
         Route::post('/logout','logout')
             ->name('auth.logout')
-            ->middleware('custom.auth');
+            ->middleware('auth:sanctum');
     });
 
     // Profile
     Route::controller(ProfileController::class)->prefix('me')->name('me')->group(function () {
-        Route::middleware('custom.auth')->group(function () {
+        Route::middleware('auth:sanctum')->group(function () {
             // Profile data
             Route::get('/', 'show')->name('show');
             Route::patch('/', 'update')->name('update');
