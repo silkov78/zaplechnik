@@ -13,10 +13,6 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->alias([
-            'custom.auth' => \App\Http\Middleware\CustomAuthMiddleware::class,
-        ]);
-
         $middleware->append(ForceJsonRequestHeader::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
