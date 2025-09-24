@@ -39,9 +39,11 @@ class AuthController extends Controller
             return response()->json([
                 'message' => 'The given data was invalid.',
                 'errors' => [
-                    'code' => 'exists',
-                    'email' => 'Invalid email or password.',
-                ]
+                    'credentials' => [
+                        'code' => 'exists',
+                        'message' => 'Invalid email or password.',
+                    ],
+                ],
             ], 400);
         }
 
