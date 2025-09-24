@@ -7,7 +7,7 @@ use Laravel\Sanctum\Sanctum;
 uses(RefreshDatabase::class);
 
 describe('logout', function () {
-    it('logs out successfully', function () {
+    it('returns correct message after logout', function () {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
@@ -43,5 +43,11 @@ describe('logout', function () {
             'tokenable_id' => $user->user_id,
             'name' => 'device2',
         ]);
+    });
+
+    it('rejects not authenticated user', function () {
+        $response = $this->postJson('/api/v1/logout');
+
+        $response->assertStatus(401);
     });
 });
