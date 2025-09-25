@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\DB;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    DB::table('users')->delete();
+    $this->user = User::factory()->create([
+        'name' => 'testUser',
+    ]);
 });
 
 describe('registration', function () {
@@ -55,10 +57,6 @@ describe('registration', function () {
     ]);
 
     it('rejects invalid name', function ($invalidParam) {
-        User::factory()->create([
-            'name' => 'testUser',
-        ]);
-
         $userData = [
             'name' => $invalidParam,
             'email' => 'piotr@example.com',
@@ -83,10 +81,6 @@ describe('registration', function () {
     ]);
 
     it('rejects invalid email', function ($invalidParam) {
-        User::factory()->create([
-            'email' => 'test@example.com',
-        ]);
-
         $userData = [
             'name' => 'testUser',
             'email' => $invalidParam,
