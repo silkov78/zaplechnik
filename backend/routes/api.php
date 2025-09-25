@@ -30,11 +30,8 @@ Route::prefix('v1')->group(function () {
 
     // Campgrounds
     Route::controller(CampgroundsController::class)->group(function () {
-        // All campgrounds
         Route::get('/campgrounds', 'index');
-
-        // Visited campgrounds
-        Route::get('/me/visited-campgrounds', 'visitedCampgrounds')
+        Route::get('/campgrounds/visited', 'indexVisited')
             ->middleware('auth:sanctum');
     });
 });

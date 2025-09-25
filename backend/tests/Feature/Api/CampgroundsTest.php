@@ -49,7 +49,7 @@ describe('campgrounds', function () {
     it('returns campgrounds visited by user', function () {
         Sanctum::actingAs($this->user);
 
-        $response = $this->getJson('/api/v1/me/visited-campgrounds');
+        $response = $this->getJson('/api/v1/campgrounds/visited');
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -74,7 +74,7 @@ describe('campgrounds', function () {
     it('returns empty feature collection for home user', function () {
         Sanctum::actingAs($this->user);
 
-        $response = $this->getJson('/api/v1/me/visited-campgrounds');
+        $response = $this->getJson('/api/v1/campgrounds/visited');
 
         $response->assertStatus(200)
             ->assertJson([
@@ -84,7 +84,7 @@ describe('campgrounds', function () {
     });
 
     it('rejects not authenticated user', function () {
-        $response = $this->getJson('/api/v1/me/visited-campgrounds');
+        $response = $this->getJson('/api/v1/campgrounds/visited');
 
         $response->assertStatus(401);
     });

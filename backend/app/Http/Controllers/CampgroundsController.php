@@ -26,7 +26,7 @@ class CampgroundsController extends Controller
     /**
      * Returns campgrounds visited by authenticated user.
      */
-    public function visitedCampgrounds(Request $request): JsonResponse
+    public function indexVisited(Request $request): JsonResponse
     {
         $visitedCampgroundsArray = $this->getFeatureCollectionArray(
             $request->user()->campgrounds,
