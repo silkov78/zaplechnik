@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CampgroundsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\VisitsController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -18,14 +19,9 @@ Route::prefix('v1')->group(function () {
         ->middleware('auth:sanctum')
         ->prefix('me')
         ->group(function () {
-            // Profile data
             Route::get('/', 'show');
             Route::patch('/', 'update');
             Route::delete('/', 'destroy');
-
-            // Profile visits
-            Route::post('/visits', 'storeVisit');
-            Route::delete('/visits', 'destroyVisit');
     });
 
     // Campgrounds
@@ -33,5 +29,13 @@ Route::prefix('v1')->group(function () {
         Route::get('/campgrounds', 'index');
         Route::get('/campgrounds/visited', 'indexVisited')
             ->middleware('auth:sanctum');
+    });
+
+    // Visits
+    Route::controller(VisitsController::class)
+        ->middleware('auth:sanctum')
+        ->group(function () {
+            Route::post('/visits', 'storeVisit');
+            Route::delete('/visits', 'destroyVisit');
     });
 });
