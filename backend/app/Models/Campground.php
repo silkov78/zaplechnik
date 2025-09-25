@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use Clickbar\Magellan\Data\Geometries\Point;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Campground extends Model
 {
+    use HasFactory;
+
     protected $primaryKey = 'campground_id';
 
     protected $fillable = [
