@@ -8,10 +8,21 @@ use Laravel\Sanctum\Sanctum;
 
 uses(RefreshDatabase::class);
 
+beforeEach(function () {
+    $this->user = User::factory()->create();
+    Sanctum::actingAs($this->user);
+
+    Campground::factory(10)->create();
+    $this->fistCampground = Campground::first();
+
+    $this->fistVisit = Visit::factory()->create([
+        'user_id' => $this->user->user_id,
+        'campground_id' => $this->fistCampground->campground_id,
+    ]);
+});
+
 describe('campgrounds', function () {
     it('returns campgrounds feature collection', function () {
-        Campground::factory(10)->create();
-
         $response = $this->getJson('/api/v1/campgrounds');
 
         $response->assertStatus(200)
@@ -29,21 +40,12 @@ describe('campgrounds', function () {
                 ],
             ])
             ->assertJsonFragment([
-                'type' => 'FeatureCollection',
+                'campground_id' => $this->fistCampground->campground_id,
+                'osm_id' => $this->fistCampground->osm_id,
             ]);
     });
 
     it('returns campgrounds visited by user', function () {
-        $user = User::factory()->create();
-        Sanctum::actingAs($user);
-
-        $campground = Campground::factory()->create();
-
-        Visit::factory()->create([
-            'user_id' => $user->user_id,
-            'campground_id' => $campground->campground_id,
-        ]);
-
         $response = $this->getJson('/api/v1/me/visited-campgrounds');
 
         $response->assertStatus(200)
@@ -61,15 +63,12 @@ describe('campgrounds', function () {
                 ],
             ])
             ->assertJsonFragment([
-                'campground_id' => $campground->campground_id,
-                'osm_id' => $campground->osm_id,
+                'campground_id' => $this->fistCampground->campground_id,
+                'osm_id' => $this->fistCampground->osm_id,
             ]);
     });
 
     it('returns empty feature collection for home user', function () {
-        $user = User::factory()->create();
-        Sanctum::actingAs($user);
-
         $response = $this->getJson('/api/v1/me/visited-campgrounds');
 
         $response->assertStatus(200)
