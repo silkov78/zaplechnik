@@ -10,7 +10,6 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->user = User::factory()->create();
-    Sanctum::actingAs($this->user);
 
     Campground::factory(10)->create();
     $this->fistCampground = Campground::first();
@@ -23,6 +22,8 @@ beforeEach(function () {
 
 describe('campgrounds', function () {
     it('returns campgrounds feature collection', function () {
+        Sanctum::actingAs($this->user);
+
         $response = $this->getJson('/api/v1/campgrounds');
 
         $response->assertStatus(200)
@@ -46,6 +47,8 @@ describe('campgrounds', function () {
     });
 
     it('returns campgrounds visited by user', function () {
+        Sanctum::actingAs($this->user);
+
         $response = $this->getJson('/api/v1/me/visited-campgrounds');
 
         $response->assertStatus(200)
@@ -69,6 +72,8 @@ describe('campgrounds', function () {
     });
 
     it('returns empty feature collection for home user', function () {
+        Sanctum::actingAs($this->user);
+
         $response = $this->getJson('/api/v1/me/visited-campgrounds');
 
         $response->assertStatus(200)
@@ -76,5 +81,13 @@ describe('campgrounds', function () {
                 'type' => 'FeatureCollection',
                 'features' => [],
             ]);
+    });
+
+    it('rejects not authenticated user', function () {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->getJson('/api/v1/me/visited-campgrounds');
+
+        $response->assertStatus(401);
     });
 });
