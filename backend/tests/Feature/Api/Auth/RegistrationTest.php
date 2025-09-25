@@ -2,13 +2,13 @@
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->user = User::factory()->create([
         'name' => 'testUser',
+        'email' => 'testUser@test.com',
     ]);
 });
 
@@ -77,7 +77,6 @@ describe('registration', function () {
         'empty name' => '',
         'not string name' => 1,
         '> 50 symbols name' => str_repeat('A', 51),
-        'existing name' => 'testUser',
     ]);
 
     it('rejects invalid email', function ($invalidParam) {
@@ -102,7 +101,30 @@ describe('registration', function () {
         'not string email' => 1,
         '> 255 symbols email' => str_repeat('A', 260) . '@example.com',
         'not email string' => 'testUser.com',
-        'existing email' => 'test@example.com',
+    ]);
+
+    it('rejects existing name and email', function ($existingCredentials) {
+        $response = $this->postJson('/api/v1/register', $existingCredentials);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure([
+                'message',
+                'errors' => [],
+            ])
+            ->assertJsonFragment([
+                'message' => 'The given data was invalid.',
+            ]);
+    })->with([
+        'existing name' => [[
+            'name' => 'testUser',
+            'email' => 'piotr@example.com',
+            'password' => 'Silkov78',
+        ]],
+        'existing email' => [[
+            'name' => 'testUser',
+            'email' => 'testUser@test.com',
+            'password' => 'Silkov78',
+        ]],
     ]);
 
     it('rejects invalid password', function ($invalidParam) {
