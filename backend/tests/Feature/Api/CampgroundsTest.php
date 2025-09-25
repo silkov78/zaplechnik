@@ -37,11 +37,11 @@ describe('campgrounds', function () {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        Campground::factory()->create();
+        $campground = Campground::factory()->create();
 
         Visit::factory()->create([
             'user_id' => $user->user_id,
-            'campground_id' => 13,
+            'campground_id' => $campground->campground_id,
         ]);
 
         $response = $this->getJson('/api/v1/me/visited-campgrounds');
@@ -61,7 +61,21 @@ describe('campgrounds', function () {
                 ],
             ])
             ->assertJsonFragment([
+                'campground_id' => $campground->campground_id,
+                'osm_id' => $campground->osm_id,
+            ]);
+    });
+
+    it('returns empty feature collection for home user', function () {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $response = $this->getJson('/api/v1/me/visited-campgrounds');
+
+        $response->assertStatus(200)
+            ->assertJson([
                 'type' => 'FeatureCollection',
+                'features' => [],
             ]);
     });
 });
