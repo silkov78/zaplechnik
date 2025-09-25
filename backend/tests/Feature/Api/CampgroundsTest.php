@@ -84,8 +84,6 @@ describe('campgrounds', function () {
     });
 
     it('rejects not authenticated user', function () {
-        Sanctum::actingAs($this->user);
-
         $response = $this->getJson('/api/v1/me/visited-campgrounds');
 
         $response->assertStatus(401);
