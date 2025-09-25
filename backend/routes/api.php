@@ -23,9 +23,6 @@ Route::prefix('v1')->group(function () {
             Route::patch('/', 'update')->name('update');
             Route::delete('/', 'destroy')->name('destroy');
 
-            // Visited campgrounds
-            Route::get('/visited-campgrounds', 'visitedCampgrounds')->name('visitedCampgrounds');
-
             // Visits
             Route::post('/visits', 'storeVisit')->name('visits.store');
             Route::delete('/visits', 'destroyVisit')->name('visits.destroy');
@@ -35,5 +32,11 @@ Route::prefix('v1')->group(function () {
     // Campgrounds
     Route::controller(CampgroundsController::class)->group(function () {
         Route::get('/campgrounds', 'index')->name('campgrounds.index');
+
+        // Visited campgrounds
+        Route::get(
+            '/me/visited-campgrounds',
+            'visitedCampgrounds'
+        )->middleware('auth:sanctum');
     });
 });
