@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\VisitStoreRequest;
 use App\Http\Resources\StoreVisitResource;
 use App\Models\Visit;
 use Illuminate\Http\JsonResponse;
@@ -12,13 +13,12 @@ class VisitsController extends Controller
     /**
      * Stores new visit record.
      * Each visit has unique pair of user_id and campground_id.
+     *
+     * It's possible to pass in campground_di such values as "2", 8.0, "12.0".
      */
-    public function store(Request $request): StoreVisitResource
+    public function store(VisitStoreRequest $request): StoreVisitResource
     {
-        $data = $request->validate([
-            'campground_id' => 'required|integer|exists:campgrounds',
-            'visit_date' => 'date:Y-m-d',
-        ]);
+        $data = $request->validated();
 
         $data['user_id'] = $request->user()->user_id;
 
