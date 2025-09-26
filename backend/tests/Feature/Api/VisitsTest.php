@@ -2,6 +2,7 @@
 
 use App\Models\Campground;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 
@@ -9,9 +10,7 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->user = User::factory()->create();
-
-    Campground::factory(3)->create();
-    $this->campArray = Campground::all()->toArray();
+    $this->campground = Campground::factory()->create();
 });
 
 describe('visits', function () {
@@ -23,7 +22,7 @@ describe('visits', function () {
     /**
      * Test allows to pass such values: 2.0, '2', '3.0'.
      */
-    it('rejects creation of new visit with invalid campground_id', function ($invalidCampgroundId) {
+    it('rejects invalid campground_id', function ($invalidCampgroundId) {
         Sanctum::actingAs($this->user);
 
         $response = $this->postJson('/api/v1/visits', [
@@ -52,5 +51,37 @@ describe('visits', function () {
         'negative campground_id' => -2,
         'zero campground_id' => 0,
         'float (not like 2.0)' => 3.2,
+    ]);
+
+    it('rejects invalid visit_date', function ($invalidVisitDate) {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->postJson('/api/v1/visits', [
+            'campground_id' => $this->campground->campground_id,
+            'visit_date' => $invalidVisitDate,
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure([
+                'message',
+                'errors' => [
+                    'visit_date' => [
+                        [
+                            'code',
+                            'message',
+                        ]
+                    ],
+                ],
+            ])
+            ->assertJsonFragment([
+                'message' => 'The given data was invalid.',
+            ]);
+    })->with([
+        'string except visit_date' => [['twenty-five']],
+        'integer except visit_date' => [[2024]],
+        'incorrect date format' => [['01.01.2021']],
+        'datetime' => [['2025-01-01T00:00:00']],
+        'before 1925' => [['1925-01-01']],
+        'tomorrow' => [[Carbon::tomorrow()->format('Y-m-d')]],
     ]);
 });
