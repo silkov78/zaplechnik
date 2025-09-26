@@ -51,6 +51,26 @@ class VisitsController extends Controller
         $data = $request->validate([
             'campground_id' => 'required|decimal:0|gt:0'
         ]);
+
+        $user = auth()->user();
+
+        $visitToDelete = Visit::where([
+            'campground_id' => $data['campground_id'],
+            'user_id' => $user->user_id,
+        ]);
+
+        if (!$visitToDelete->exists()) {
+            return response()->json([
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'campground_id' => [
+                        'code' => 'exists',
+                        'message' => 'Visit with provided user_id and campground_id does not exist.',
+                    ],
+                ],
+            ], 400);
+        }
+
         return response()->json([
             'message' => 'User successfully deleted a visit.',
         ]);
