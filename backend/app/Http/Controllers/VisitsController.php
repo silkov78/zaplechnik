@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\VisitStoreRequest;
 use App\Http\Resources\StoreVisitResource;
+use App\Models\Campground;
 use App\Models\Visit;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,9 +17,23 @@ class VisitsController extends Controller
      *
      * It's possible to pass in campground_di such values as "2", 8.0, "12.0".
      */
-    public function store(VisitStoreRequest $request): StoreVisitResource
+    public function store(VisitStoreRequest $request): StoreVisitResource|JsonResponse
     {
         $data = $request->validated();
+
+        if (!Campground::where('campground_id', $data['campground_id'])->exists()) {
+            return response()->json([
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'campground_id' => [
+                        [
+                            'code' => 'exists',
+                            'message' => 'Campground with provided campground_id does not exist.',
+                        ]
+                    ],
+                ],
+            ], 400);
+        }
 
         $data['user_id'] = $request->user()->user_id;
 
