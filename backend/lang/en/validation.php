@@ -188,6 +188,10 @@ return [
         'code' => 'enum',
         'message' => 'The selected :attribute is invalid.',
     ],
+    'exists' => [
+        'code' => 'exists',
+        'message' => 'The resource with provided :attribute does not exist.',
+    ],
     'file' => [
         'code' => 'file',
         'message' => 'The :attribute field must be a file.',
@@ -313,6 +317,8 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'campground_id' => 'campground_id',
+    ],
 
 ];
