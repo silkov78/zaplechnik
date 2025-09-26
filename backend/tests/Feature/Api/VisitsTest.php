@@ -53,6 +53,31 @@ describe('visits', function () {
         'float (not like 2.0)' => 3.2,
     ]);
 
+    it('rejects not-existing campground_id', function () {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->postJson('/api/v1/visits', [
+            'campground_id' => 999999,
+            'visit_date' => '2025-01-01',
+        ]);
+
+        $response->assertStatus(400)
+            ->assertJsonStructure([
+                'message',
+                'errors' => [
+                    'campground_id' => [
+                        [
+                            'code',
+                            'message',
+                        ]
+                    ],
+                ],
+            ])
+            ->assertJsonFragment([
+                'message' => 'Campground with provided campground_id does not exist.',
+            ]);
+    });
+
     it('rejects invalid visit_date', function ($invalidVisitDate) {
         Sanctum::actingAs($this->user);
 
