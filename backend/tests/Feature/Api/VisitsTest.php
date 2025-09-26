@@ -69,38 +69,34 @@ describe('visits', function () {
             ->assertJsonStructure(['message', 'errors' => ['visit_date']])
             ->assertJsonFragment(['code' => 'date_format']);
     })->with([
-        'incorrect date format' => [[
+        'incorrect date_format' => [[
             'twenty-five', 2021, '2021', '01.01.2021', '2025-01-01T00:00:00'
         ]]
     ]);
 
-    it('rejects invalid visit_date (before 1924-12-31)', function ($invalidVisitDate) {
+    it('rejects invalid visit_date (before 1924-12-31)', function () {
         Sanctum::actingAs($this->user);
 
         $response = $this->postJson('/api/v1/visits', [
             'campground_id' => $this->campground->campground_id,
-            'visit_date' => $invalidVisitDate,
+            'visit_date' => '1900-01-01',
         ]);
 
         $response->assertStatus(422)
             ->assertJsonStructure(['message', 'errors' => ['visit_date']])
             ->assertJsonFragment(['code' => 'after']);
-    })->with([
-        'before 1924-12-31' => [['1900-01-01']],
-    ]);
+    });
 
-    it('rejects invalid visit_date (after today)', function ($invalidVisitDate) {
+    it('rejects invalid visit_date (after today)', function () {
         Sanctum::actingAs($this->user);
 
         $response = $this->postJson('/api/v1/visits', [
             'campground_id' => $this->campground->campground_id,
-            'visit_date' => $invalidVisitDate,
+            'visit_date' => Carbon::tomorrow()->format('Y-m-d'),
         ]);
 
         $response->assertStatus(422)
             ->assertJsonStructure(['message', 'errors' => ['visit_date']])
             ->assertJsonFragment(['code' => 'before_or_equal']);
-    })->with([
-        'after today' => [[Carbon::tomorrow()->format('Y-m-d')]],
-    ]);
+    });
 });
