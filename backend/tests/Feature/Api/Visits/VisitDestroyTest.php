@@ -18,4 +18,19 @@ describe('visits: destroy', function () {
         $response = $this->postJson('/api/v1/visits');
         $response->assertStatus(401);
     });
+
+    /**
+     * Test allows to pass such values: 2.0, '2', '3.0'.
+     */
+    it('rejects invalid campground_id (empty)', function () {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->delete('/api/v1/visits', [
+            'campground_id' => '',
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure(['message', 'errors' => ['campground_id']])
+            ->assertJsonFragment(['code' => 'required']);
+    });
 });
