@@ -11,13 +11,12 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->user = User::factory()->create();
-    Campground::factory(3)->create();
-
-    $this->firstCampground = Campground::first();
+    $this->userCamp = Campground::factory()->create();
+    $this->notUserCamp = Campground::factory()->create();
 
     $this->visit = Visit::create([
         'user_id' => $this->user->user_id,
-        'campground_id' => $this->firstCampground->campground_id,
+        'campground_id' => $this->userCamp->campground_id,
     ]);
 });
 
@@ -78,6 +77,19 @@ describe('visits: destroy', function () {
 
         $response = $this->delete('/api/v1/visits', [
             'campground_id' => 999999,
+        ]);
+
+        $response->assertStatus(400)
+            ->assertJsonStructure(['message', 'errors' => ['campground_id']])
+            ->assertJsonFragment(['code' => 'exists']);;
+    });
+
+    it('rejects campground_id not associated with current user', function () {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->delete('/api/v1/visits', [
+            'campground_id' => $this->notUserCamp->campground_id,
+            'user_id' => $this->user->user_id,
         ]);
 
         $response->assertStatus(400)
