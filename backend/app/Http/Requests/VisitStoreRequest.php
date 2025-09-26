@@ -25,6 +25,13 @@ class VisitStoreRequest extends FormRequest
     {
         return [
             'campground_id' => 'required|decimal:0|gt:0',
+            'visit_date' => [
+                'nullable',
+                'date',
+                'date_format:Y-m-d',
+                'before:1925-01-01',
+                'after_or_equal:tomorrow',
+            ],
         ];
     }
 }

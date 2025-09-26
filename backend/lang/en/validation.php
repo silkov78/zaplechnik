@@ -16,16 +16,16 @@ return [
     'accepted' => 'The :attribute field must be accepted.',
     'accepted_if' => 'The :attribute field must be accepted when :other is :value.',
     'active_url' => 'The :attribute field must be a valid URL.',
-    'after' => 'The :attribute field must be a date after :date.',
-    'after_or_equal' => 'The :attribute field must be a date after or equal to :date.',
+//    'after' => 'The :attribute field must be a date after :date.',
+//    'after_or_equal' => 'The :attribute field must be a date after or equal to :date.',
     'alpha' => 'The :attribute field must only contain letters.',
     'alpha_dash' => 'The :attribute field must only contain letters, numbers, dashes, and underscores.',
     'alpha_num' => 'The :attribute field must only contain letters and numbers.',
     'any_of' => 'The :attribute field is invalid.',
     'array' => 'The :attribute field must be an array.',
     'ascii' => 'The :attribute field must only contain single-byte alphanumeric characters and symbols.',
-    'before' => 'The :attribute field must be a date before :date.',
-    'before_or_equal' => 'The :attribute field must be a date before or equal to :date.',
+//    'before' => 'The :attribute field must be a date before :date.',
+//    'before_or_equal' => 'The :attribute field must be a date before or equal to :date.',
     'between' => [
         'array' => 'The :attribute field must have between :min and :max items.',
         'file' => 'The :attribute field must be between :min and :max kilobytes.',
@@ -39,7 +39,7 @@ return [
     'current_password' => 'The password is incorrect.',
 //    'date' => 'The :attribute field must be a valid date.',
     'date_equals' => 'The :attribute field must be a date equal to :date.',
-    'date_format' => 'The :attribute field must match the format :format.',
+//    'date_format' => 'The :attribute field must match the format :format.',
 //    'decimal' => 'The :attribute field must have :decimal decimal places.',
     'declined' => 'The :attribute field must be declined.',
     'declined_if' => 'The :attribute field must be declined when :other is :value.',
@@ -172,17 +172,37 @@ return [
      * ===========================================================
      */
 
+    'after' => [
+        'code' => 'after',
+        'message' => 'The :attribute field must be a date after :date.',
+    ],
+    'after_or_equal' => [
+        'code' => 'after_or_equal',
+        'message' => 'The :attribute field must be a date after or equal to :date.',
+    ],
+    'before' => [
+        'code' => 'before',
+        'message' => 'The :attribute field must be a date before :date.',
+    ],
+    'before_or_equal' => [
+        'code' => 'before_or_equal',
+        'message' => 'The :attribute field must be a date before or equal to :date.',
+    ],
     'boolean' => [
         'code' => 'boolean',
         'message' => 'The :attribute field must be true or false.',
     ],
-    'decimal' => [
-        'code' => 'decimal',
-        'message' => 'The :attribute field must have :decimal decimal places.',
-    ],
     'date' => [
         'code' => 'date',
         'message' => 'The :attribute field must be a valid date.',
+    ],
+    'date_format' => [
+        'code' => 'date_format',
+        'message' => 'The :attribute field must match the format :format.',
+    ],
+    'decimal' => [
+        'code' => 'decimal',
+        'message' => 'The :attribute field must have :decimal decimal places.',
     ],
     'email' => [
         'code' => 'email',
@@ -341,6 +361,7 @@ return [
 
     'attributes' => [
         'campground_id' => 'campground_id',
+        'visit_date' => 'visit_date',
     ],
 
 ];
