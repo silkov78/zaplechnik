@@ -35,7 +35,7 @@ Route::prefix('v1')->group(function () {
     Route::controller(VisitsController::class)
         ->middleware('auth:sanctum')
         ->group(function () {
-            Route::post('/visits', 'storeVisit');
-            Route::delete('/visits', 'destroyVisit');
+            Route::post('/visits', 'store');
+            Route::delete('/visits', 'destroy');
     });
 });
