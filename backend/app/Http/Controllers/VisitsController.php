@@ -49,7 +49,7 @@ class VisitsController extends Controller
     public function destroy(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'campground_id' => 'required|decimal:0'
+            'campground_id' => 'required|decimal:0|gt:0'
         ]);
         return response()->json([
             'message' => 'User successfully deleted a visit.',

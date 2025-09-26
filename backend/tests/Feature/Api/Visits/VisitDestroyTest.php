@@ -15,7 +15,7 @@ beforeEach(function () {
 
 describe('visits: destroy', function () {
     it('rejects not authenticated user', function () {
-        $response = $this->postJson('/api/v1/visits');
+        $response = $this->delete('/api/v1/visits');
         $response->assertStatus(401);
     });
 
@@ -44,7 +44,17 @@ describe('visits: destroy', function () {
         $response->assertStatus(422)
             ->assertJsonStructure(['message', 'errors' => ['campground_id']])
             ->assertJsonFragment(['code' => 'decimal']);
-    })->with([
-        'twenty-four', 3.2,
-    ]);
+    })->with(['twenty-four', 3.2]);
+
+    it('rejects invalid campground_id (less 1)', function ($invalidCampgroundId) {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->delete('/api/v1/visits', [
+            'campground_id' => $invalidCampgroundId,
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure(['message', 'errors' => ['campground_id']])
+            ->assertJsonFragment(['code' => 'gt']);
+    })->with([0, -2]);
 });
