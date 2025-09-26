@@ -15,7 +15,54 @@ beforeEach(function () {
     $this->campground = Campground::factory()->create();
 });
 
-describe('visits', function () {
+describe('visits: store', function () {
+    it('creates visit successfully', function () {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->postJson('/api/v1/visits', [
+            'campground_id' => $this->campground->campground_id,
+            'user_id' => $this->user->user_id,
+            'visit_date' => '2025-01-01',
+        ]);
+
+        $this->assertDatabaseHas('visits', [
+            'campground_id' => $this->campground->campground_id,
+            'user_id' => $this->user->user_id,
+        ]);
+
+        $response->assertStatus(201)
+            ->assertJsonStructure([
+                    'data' => [
+                        'info' => [
+                            'user_id', 'campground_id', 'visit_date',
+                        ]
+                    ]]
+            );
+    });
+
+    it('creates visit successfully without date', function () {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->postJson('/api/v1/visits', [
+            'campground_id' => $this->campground->campground_id,
+            'user_id' => $this->user->user_id,
+        ]);
+
+        $this->assertDatabaseHas('visits', [
+            'campground_id' => $this->campground->campground_id,
+            'user_id' => $this->user->user_id,
+        ]);
+
+        $response->assertStatus(201)
+            ->assertJsonStructure([
+                'data' => [
+                    'info' => [
+                        'user_id', 'campground_id', 'visit_date',
+                    ]
+                ]]
+            );
+    });
+
     it('rejects not authenticated user', function () {
         $response = $this->postJson('/api/v1/visits');
         $response->assertStatus(401);
