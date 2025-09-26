@@ -25,7 +25,7 @@ class VisitStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'campground_id' => 'decimal:0|gt:0',
+            'campground_id' => 'required|decimal:0|gt:0',
             'visit_date' => [
                 'nullable',
                 Rule::date()
