@@ -19,6 +19,13 @@ describe('visits: destroy', function () {
         $response->assertStatus(401);
     });
 
+    it('rejects empty query', function () {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->delete('/api/v1/visits');
+        $response->assertStatus(422);
+    });
+
     it('rejects invalid campground_id (empty)', function () {
         Sanctum::actingAs($this->user);
 
