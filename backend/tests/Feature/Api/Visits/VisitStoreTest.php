@@ -68,6 +68,19 @@ describe('visits: store', function () {
         $response->assertStatus(401);
     });
 
+    it('rejects empty campground_id', function () {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->postJson('/api/v1/visits', [
+            'campground_id' => '',
+            'visit_date' => '2025-01-01',
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure(['message', 'errors' => ['campground_id']])
+            ->assertJsonFragment(['code' => 'required']);
+    });
+
     /**
      * Test allows to pass such values: 2.0, '2', '3.0'.
      */
