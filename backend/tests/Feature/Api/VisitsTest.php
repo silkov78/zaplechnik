@@ -20,6 +20,9 @@ describe('visits', function () {
         $response->assertStatus(401);
     });
 
+    /**
+     * Test allows to pass such values: 2.0, '2', '3.0'.
+     */
     it('rejects invalid campground_id', function ($invalidCampgroundId) {
         Sanctum::actingAs($this->user);
 
@@ -30,23 +33,26 @@ describe('visits', function () {
 
         $response = $this->postJson('/api/v1/visits', $data);
 
-        dump($response->json());
-
         $response->assertStatus(422)
             ->assertJsonStructure([
                 'message',
                 'errors' => [
                     'campground_id' => [
-                        'code',
-                        'message',
+                        [
+                            'code',
+                            'message',
+                        ]
                     ],
                 ],
+            ])
+            ->assertJsonFragment([
+                'message' => 'The given data was invalid.',
             ]);
     })->with([
         'empty campground_id' => '',
-        'string campground_id' => 'fdsfsadf',
-        'float campground_id' => 2.0,
+        'string campground_id' => 'twenty-five',
         'negative campground_id' => -2,
         'zero campground_id' => 0,
+        'float (not like 2.0)' => 3.2,
     ]);
 });
