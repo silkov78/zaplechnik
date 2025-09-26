@@ -23,15 +23,13 @@ describe('visits', function () {
     /**
      * Test allows to pass such values: 2.0, '2', '3.0'.
      */
-    it('rejects invalid campground_id', function ($invalidCampgroundId) {
+    it('rejects creation of new visit with invalid campground_id', function ($invalidCampgroundId) {
         Sanctum::actingAs($this->user);
 
-        $data = [
+        $response = $this->postJson('/api/v1/visits', [
             'campground_id' => $invalidCampgroundId,
             'visit_date' => '2025-01-01',
-        ];
-
-        $response = $this->postJson('/api/v1/visits', $data);
+        ]);
 
         $response->assertStatus(422)
             ->assertJsonStructure([
