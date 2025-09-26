@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class VisitStoreRequest extends FormRequest
 {
@@ -24,13 +25,13 @@ class VisitStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'campground_id' => 'required|decimal:0|gt:0',
+            'campground_id' => 'decimal:0|gt:0',
             'visit_date' => [
                 'nullable',
-                'date',
-                'date_format:Y-m-d',
-                'before:1925-01-01',
-                'after_or_equal:tomorrow',
+                Rule::date()
+                    ->format('Y-m-d')
+                    ->todayOrBefore()
+                    ->after('1924-01-01'),
             ],
         ];
     }
