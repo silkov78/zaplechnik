@@ -19,7 +19,7 @@ class StoreVisitResource extends JsonResource
             'info' => [
                 'user_id' => $this->user_id,
                 'campground_id' => $this->campground_id,
-                'visit_date' => $this->visit_date->format('Y-m-d'),
+                'visit_date' => $this->visit_date?->format('Y-m-d'),
             ],
         ];
     }
