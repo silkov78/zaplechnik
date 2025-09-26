@@ -40,7 +40,7 @@ return [
 //    'date' => 'The :attribute field must be a valid date.',
     'date_equals' => 'The :attribute field must be a date equal to :date.',
     'date_format' => 'The :attribute field must match the format :format.',
-    'decimal' => 'The :attribute field must have :decimal decimal places.',
+//    'decimal' => 'The :attribute field must have :decimal decimal places.',
     'declined' => 'The :attribute field must be declined.',
     'declined_if' => 'The :attribute field must be declined when :other is :value.',
     'different' => 'The :attribute field and :other must be different.',
@@ -58,12 +58,12 @@ return [
     'extensions' => 'The :attribute field must have one of the following extensions: :values.',
 //    'file' => 'The :attribute field must be a file.',
     'filled' => 'The :attribute field must have a value.',
-    'gt' => [
-        'array' => 'The :attribute field must have more than :value items.',
-        'file' => 'The :attribute field must be greater than :value kilobytes.',
-        'numeric' => 'The :attribute field must be greater than :value.',
-        'string' => 'The :attribute field must be greater than :value characters.',
-    ],
+//    'gt' => [
+//        'array' => 'The :attribute field must have more than :value items.',
+//        'file' => 'The :attribute field must be greater than :value kilobytes.',
+//        'numeric' => 'The :attribute field must be greater than :value.',
+//        'string' => 'The :attribute field must be greater than :value characters.',
+//    ],
     'gte' => [
         'array' => 'The :attribute field must have :value items or more.',
         'file' => 'The :attribute field must be greater than or equal to :value kilobytes.',
@@ -176,6 +176,10 @@ return [
         'code' => 'boolean',
         'message' => 'The :attribute field must be true or false.',
     ],
+    'decimal' => [
+        'code' => 'decimal',
+        'message' => 'The :attribute field must have :decimal decimal places.',
+    ],
     'date' => [
         'code' => 'date',
         'message' => 'The :attribute field must be a valid date.',
@@ -195,6 +199,24 @@ return [
     'file' => [
         'code' => 'file',
         'message' => 'The :attribute field must be a file.',
+    ],
+    'gt' => [
+        'array' => [
+            'code' => 'gt',
+            'message' => 'The :attribute field must have more than :value items.',
+        ],
+        'file' => [
+            'code' => 'gt',
+            'message' => 'The :attribute field must be greater than :value kilobytes.',
+        ],
+        'numeric' => [
+            'code' => 'gt',
+            'message' => 'The :attribute field must be greater than :value.',
+        ],
+        'string' => [
+            'code' => 'gt',
+            'message' => 'The :attribute field must be greater than :value characters.',
+        ],
     ],
     'image' => [
         'code' => 'image',
