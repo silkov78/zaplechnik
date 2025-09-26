@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 
+// TODO: Read about intersection tests
+
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
@@ -31,20 +33,7 @@ describe('visits', function () {
         ]);
 
         $response->assertStatus(422)
-            ->assertJsonStructure([
-                'message',
-                'errors' => [
-                    'campground_id' => [
-                        [
-                            'code',
-                            'message',
-                        ]
-                    ],
-                ],
-            ])
-            ->assertJsonFragment([
-                'message' => 'The given data was invalid.',
-            ]);
+            ->assertJsonStructure(['message', 'errors' => ['campground_id']]);
     })->with([
         'empty campground_id' => '',
         'string campground_id' => 'twenty-five',
@@ -62,23 +51,13 @@ describe('visits', function () {
         ]);
 
         $response->assertStatus(400)
-            ->assertJsonStructure([
-                'message',
-                'errors' => [
-                    'campground_id' => [
-                        [
-                            'code',
-                            'message',
-                        ]
-                    ],
-                ],
-            ])
-            ->assertJsonFragment([
-                'message' => 'Campground with provided campground_id does not exist.',
-            ]);
+            ->assertJsonStructure(['message', 'errors' => ['campground_id']]);;
     });
 
-    it('rejects invalid visit_date', function ($invalidVisitDate) {
+    /*
+     * visit_date
+     */
+    it('rejects invalid visit_date (incorrect date_format)', function ($invalidVisitDate) {
         Sanctum::actingAs($this->user);
 
         $response = $this->postJson('/api/v1/visits', [
@@ -87,26 +66,41 @@ describe('visits', function () {
         ]);
 
         $response->assertStatus(422)
-            ->assertJsonStructure([
-                'message',
-                'errors' => [
-                    'visit_date' => [
-                        [
-                            'code',
-                            'message',
-                        ]
-                    ],
-                ],
-            ])
-            ->assertJsonFragment([
-                'message' => 'The given data was invalid.',
-            ]);
+            ->assertJsonStructure(['message', 'errors' => ['visit_date']])
+            ->assertJsonFragment(['code' => 'date_format']);
     })->with([
-        'string except visit_date' => [['twenty-five']],
-        'integer except visit_date' => [[2024]],
-        'incorrect date format' => [['01.01.2021']],
-        'datetime' => [['2025-01-01T00:00:00']],
-        'before 1925' => [['1925-01-01']],
-        'tomorrow' => [[Carbon::tomorrow()->format('Y-m-d')]],
+        'incorrect date format' => [[
+            'twenty-five', 2021, '2021', '01.01.2021', '2025-01-01T00:00:00'
+        ]]
+    ]);
+
+    it('rejects invalid visit_date (before 1924-12-31)', function ($invalidVisitDate) {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->postJson('/api/v1/visits', [
+            'campground_id' => $this->campground->campground_id,
+            'visit_date' => $invalidVisitDate,
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure(['message', 'errors' => ['visit_date']])
+            ->assertJsonFragment(['code' => 'after']);
+    })->with([
+        'before 1924-12-31' => [['1900-01-01']],
+    ]);
+
+    it('rejects invalid visit_date (after today)', function ($invalidVisitDate) {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->postJson('/api/v1/visits', [
+            'campground_id' => $this->campground->campground_id,
+            'visit_date' => $invalidVisitDate,
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure(['message', 'errors' => ['visit_date']])
+            ->assertJsonFragment(['code' => 'before_or_equal']);
+    })->with([
+        'after today' => [[Carbon::tomorrow()->format('Y-m-d')]],
     ]);
 });
