@@ -20,6 +20,30 @@ beforeEach(function () {
 });
 
 describe('visits: destroy', function () {
+    it('destroys a visit successfully', function () {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->delete('/api/v1/visits', [
+            'campground_id' => $this->userCamp->campground_id,
+        ]);
+
+        $this->assertDatabaseMissing('visits', [
+            'user_id' => $this->user->user_id,
+            'campground_id' => $this->userCamp->campground_id,
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    'info' => [
+                        'visit_id' => $this->visit->visit_id,
+                        'user_id' => $this->visit->user_id,
+                        'campground_id' => $this->visit->campground_id,
+                    ],
+                ],
+            ]);
+    });
+
     it('rejects not authenticated user', function () {
         $response = $this->delete('/api/v1/visits');
         $response->assertStatus(401);

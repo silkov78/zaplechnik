@@ -71,6 +71,12 @@ class VisitsController extends Controller
             ], 400);
         }
 
+        Visit::destroy([
+            'campground_id' => $data['campground_id'],
+            'user_id' => $user->user_id,
+        ]);
+
+        // TODO: change message according API
         return response()->json([
             'message' => 'User successfully deleted a visit.',
         ]);
