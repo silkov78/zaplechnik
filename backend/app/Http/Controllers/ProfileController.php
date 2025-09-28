@@ -3,18 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
-use App\Http\Resources\ProfileResource;
-use App\Http\Resources\StoreVisitResource;
-use App\Models\Visit;
+use App\Http\Resources\ProfileShowResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
-    public function show(Request $request): JsonResponse
+    /**
+     * Shows profile data of authenticated user.
+     */
+    public function show(Request $request): ProfileShowResource
     {
-        return response()->json([]);
+        return new ProfileShowResource($request->user());
     }
 
     /**
