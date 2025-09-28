@@ -3,7 +3,6 @@
 use App\Models\Campground;
 use App\Models\User;
 use App\Models\Visit;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 

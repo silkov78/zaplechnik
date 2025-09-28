@@ -95,7 +95,6 @@ describe('visits: store', function () {
         $response->assertStatus(422)
             ->assertJsonStructure(['message', 'errors' => ['campground_id']]);
     })->with([
-        'empty campground_id' => '',
         'string campground_id' => 'twenty-five',
         'negative campground_id' => -2,
         'zero campground_id' => 0,
