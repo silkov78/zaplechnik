@@ -8,6 +8,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->user = User::factory()->create([
         'name' => 'testUser',
+        'email' => 'testUser@test.com',
     ]);
 });
 
@@ -66,16 +67,16 @@ describe('profile: update', function () {
         'not-email string' => 'hakuna.matata',
     ]);
 
-//    it('rejects not-unique name', function () {
-//        $this->actingAs($this->user);
-//
-//        $response = $this->patch('/api/v1/me', ['name' => $this->user->name]);
-//
-//        $response->assertStatus(400)
-//            ->assertJsonStructure([
-//                'message',
-//                'errors' => ['name' => [['code', 'message']]]
-//            ])
-//            ->assertJsonFragment(['code' => 'unique']);
-//    });
+    it('rejects not-unique email', function () {
+        $this->actingAs($this->user);
+
+        $response = $this->patch('/api/v1/me', ['email' => $this->user->email]);
+
+        $response->assertStatus(400)
+            ->assertJsonStructure([
+                'message',
+                'errors' => ['email' => [['code', 'message']]]
+            ])
+            ->assertJsonFragment(['code' => 'unique']);
+    });
 });

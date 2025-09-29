@@ -43,18 +43,36 @@ class ProfileController extends Controller
             ], 422);
         }
 
-        if (User::where('name', $data['name'])->exists()) {
-            return response()->json([
-                'message' => 'The given data was invalid.',
-                'errors' => [
-                    'name' => [
-                        [
-                            'code' => 'unique',
-                            'message' => 'The :attribute has already been taken.',
-                        ]
+        if (isset($data['name'])) {
+            if (User::where('name', $data['name'])->exists()) {
+                return response()->json([
+                    'message' => 'The given data was invalid.',
+                    'errors' => [
+                        'name' => [
+                            [
+                                'code' => 'unique',
+                                'message' => 'The :attribute has already been taken.',
+                            ]
+                        ],
                     ],
-                ],
-            ], 400);
+                ], 400);
+            }
+        }
+
+        if (isset($data['email'])) {
+            if ($data['email'] && User::where('email', $data['email'])->exists()) {
+                return response()->json([
+                    'message' => 'The given data was invalid.',
+                    'errors' => [
+                        'email' => [
+                            [
+                                'code' => 'unique',
+                                'message' => 'The :attribute has already been taken.',
+                            ]
+                        ],
+                    ],
+                ], 400);
+            }
         }
 
         return response()->json(['how']);
