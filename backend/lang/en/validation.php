@@ -72,7 +72,7 @@ return [
     ],
     'hex_color' => 'The :attribute field must be a valid hexadecimal color.',
 //    'image' => 'The :attribute field must be an image.',
-    'in' => 'The selected :attribute is invalid.',
+//    'in' => 'The selected :attribute is invalid.',
     'in_array' => 'The :attribute field must exist in :other.',
     'in_array_keys' => 'The :attribute field must contain at least one of the following keys: :values.',
 //    'integer' => 'The :attribute field must be an integer.',
@@ -242,6 +242,10 @@ return [
         'code' => 'image',
         'message' => 'The :attribute field must be an image.',
     ],
+    'in' => [
+        'code' => 'enum',
+        'message' => 'The selected :attribute is invalid.',
+    ],
     'integer' => [
         'code' => 'integer',
         'message' => 'The :attribute field must be an integer.',
@@ -341,7 +345,7 @@ return [
             'rule-name' => 'custom-message',
         ],
         'gender' => [
-            'enum' => [
+            'in' => [
                 'code' => 'enum',
                 'message' => 'The selected :attribute must be female or male.',
             ]
