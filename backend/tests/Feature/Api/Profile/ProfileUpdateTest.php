@@ -25,4 +25,18 @@ describe('profile: update', function () {
                 'message' => 'At least one field must be provided.',
             ]);
     });
+
+    it('rejects invalid name', function ($invalidParam) {
+        $this->actingAs($this->user);
+
+        $response = $this->patch('/api/v1/me', ['name' => $invalidParam]);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure(['message', 'errors' => ['name' => []]]);
+    })->with([
+        'empty string' => '',
+        'integer' => 24,
+        'boolean' => true,
+        'length > 50' => str_repeat('Ababab', 10),
+    ]);
 });
