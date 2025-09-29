@@ -25,6 +25,7 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): JsonResponse
     {
         $data = $request->validated();
+        $user = $request->user();
 
         if (!$data) {
             return response()->json([
@@ -48,7 +49,7 @@ class ProfileController extends Controller
                         'name' => [
                             [
                                 'code' => 'unique',
-                                'message' => 'The :attribute has already been taken.',
+                                'message' => 'The name has already been taken.',
                             ]
                         ],
                     ],
@@ -64,7 +65,7 @@ class ProfileController extends Controller
                         'email' => [
                             [
                                 'code' => 'unique',
-                                'message' => 'The :attribute has already been taken.',
+                                'message' => 'The email has already been taken.',
                             ]
                         ],
                     ],
@@ -72,30 +73,26 @@ class ProfileController extends Controller
             }
         }
 
-        return response()->json(['HAKUNA MATATA']);
-//        $data = $request->validated();
-//        $user = $request->user();
-//
-//        if ($request->hasFile('avatar')) {
-//            if ($user->avatar && Storage::exists('avatars/' . $user->avatar)) {
-//                Storage::delete('avatars/' . $user->avatar);
-//            }
-//
-//            $avatarFile = $request->file('avatar');
-//            $avatarFileName = $avatarFile->hashName();
-//            $avatarFile->storeAs('avatars', $avatarFileName);
-//
-//            $data['avatar'] = $avatarFileName;
-//        }
-//
-//        $request->user()->update($data);
-//
-//        if (isset($data['avatar'])) {
-//            unset($data['avatar']);
-//            $data['avatarUrl'] = $user->avatarUrl;
-//        }
-//
-//        return response()->json(['data' => $data]);
+        if ($request->hasFile('avatar')) {
+            if ($user->avatar && Storage::exists('avatars/' . $user->avatar)) {
+                Storage::delete('avatars/' . $user->avatar);
+            }
+
+            $avatarFile = $request->file('avatar');
+            $avatarFileName = $avatarFile->hashName();
+            $avatarFile->storeAs('avatars', $avatarFileName);
+
+            $data['avatar'] = $avatarFileName;
+        }
+
+        $request->user()->update($data);
+
+        if (isset($data['avatar'])) {
+            unset($data['avatar']);
+            $data['avatarUrl'] = $user->avatarUrl;
+        }
+
+        return response()->json(['data' => $data]);
     }
 
     /**

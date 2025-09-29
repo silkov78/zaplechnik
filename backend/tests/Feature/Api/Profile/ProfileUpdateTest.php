@@ -13,6 +13,26 @@ beforeEach(function () {
 });
 
 describe('profile: update', function () {
+    it('updates one field successfully', function () {
+        $this->actingAs($this->user);
+
+        $response = $this->patch('/api/v1/me', [
+            'name' => 'hakunaMatata',
+        ]);
+
+        $this->assertDatabaseHas('users', [
+            'user_id' => $this->user->user_id,
+            'name' => 'hakunaMatata',
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    'name' => 'hakunaMatata',
+                ],
+            ]);
+    });
+
     it('rejects not-authenticated user', function () {
         $this->getJson('/api/v1/me')->assertStatus(401);
     });
