@@ -32,11 +32,24 @@ describe('profile: update', function () {
         $response = $this->patch('/api/v1/me', ['name' => $invalidParam]);
 
         $response->assertStatus(422)
-            ->assertJsonStructure(['message', 'errors' => ['name' => []]]);
+            ->assertJsonStructure(['message', 'errors' => ['name' => [['code', 'message']]]]);
     })->with([
         'empty string' => '',
         'integer' => 24,
         'boolean' => true,
         'length > 50' => str_repeat('Ababab', 10),
     ]);
+
+    it('rejects not-unique name', function () {
+        $this->actingAs($this->user);
+
+        $response = $this->patch('/api/v1/me', ['name' => $this->user->name]);
+
+        $response->assertStatus(400)
+            ->assertJsonStructure([
+                'message',
+                'errors' => ['name' => [['code', 'message']]]
+            ])
+            ->assertJsonFragment(['code' => 'unique']);
+    });
 });

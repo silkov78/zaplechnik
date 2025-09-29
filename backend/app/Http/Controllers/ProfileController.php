@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Resources\ProfileShowResource;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -40,6 +41,21 @@ class ProfileController extends Controller
                 ],
             ], 422);
         }
+
+        if (User::where('name', $data['name'])->exists()) {
+            return response()->json([
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'name' => [
+                        [
+                            'code' => 'unique',
+                            'message' => 'The :attribute has already been taken.',
+                        ]
+                    ],
+                ],
+            ], 400);
+        }
+
         return response()->json(['how']);
 //        $data = $request->validated();
 //        $user = $request->user();
