@@ -34,12 +34,10 @@ describe('visits: destroy', function () {
 
         $response->assertStatus(200)
             ->assertJson([
-                'data' => [
-                    'info' => [
-                        'visit_id' => $this->visit->visit_id,
-                        'user_id' => $this->visit->user_id,
-                        'campground_id' => $this->visit->campground_id,
-                    ],
+                'message' => 'User successfully deleted a visit.',
+                'info' => [
+                    'visit_id' => $this->visit->visit_id,
+                    'user_id' => $this->visit->user_id,
                 ],
             ]);
     });
