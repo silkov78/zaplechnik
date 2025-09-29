@@ -27,6 +27,8 @@ class ProfileController extends Controller
         $data = $request->validate([
             'name' => 'string|max:50|min:1',
             'email' => 'string|email|max:255',
+//            'avatar' =>
+            'telegram' => 'string|starts_with:@|max:100|min:2',
         ]);
 
         if (!$data) {

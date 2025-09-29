@@ -79,4 +79,19 @@ describe('profile: update', function () {
             ])
             ->assertJsonFragment(['code' => 'unique']);
     });
+
+    // TODO: test avatar field
+
+    it('rejects invalid telegram', function ($invalidParam) {
+        $this->actingAs($this->user);
+
+        $response = $this->patch('/api/v1/me', ['telegram' => $invalidParam]);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure(['message', 'errors' => ['telegram' => [['code', 'message']]]]);
+    })->with([
+        'empty' => '',
+        'not string' => 24,
+        'not-telegram string' => 'hakuna.matata',
+    ]);
 });
