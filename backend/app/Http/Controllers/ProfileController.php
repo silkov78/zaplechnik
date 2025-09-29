@@ -29,6 +29,7 @@ class ProfileController extends Controller
             'email' => 'string|email|max:255',
 //            'avatar' =>
             'telegram' => 'string|starts_with:@|max:100|min:2',
+            'bio' => 'string|max:255',
         ]);
 
         if (!$data) {

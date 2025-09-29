@@ -94,4 +94,17 @@ describe('profile: update', function () {
         'not string' => 24,
         'not-telegram string' => 'hakuna.matata',
     ]);
+
+    it('rejects invalid bio', function ($invalidParam) {
+        $this->actingAs($this->user);
+
+        $response = $this->patch('/api/v1/me', ['bio' => $invalidParam]);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure(['message', 'errors' => ['bio' => [['code', 'message']]]]);
+    })->with([
+        'empty' => '',
+        'not string' => 24,
+        'string > 255 symbols' => str_repeat('hakuna.matata', 40),
+    ]);
 });
