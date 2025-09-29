@@ -21,8 +21,21 @@ class ProfileController extends Controller
     /**
      * Updates user's data. Handles attached avatar photo.
      */
-    public function update(ProfileUpdateRequest $request): JsonResponse
+    public function update(Request $request): JsonResponse
     {
+        if (!$request->array()) {
+            return response()->json([
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'fields' => [
+                        [
+                            'code' => 'empty',
+                            'message' => 'At least one field must be provided.',
+                        ]
+                    ],
+                ],
+            ], 422);
+        }
         return response()->json(['how']);
 //        $data = $request->validated();
 //        $user = $request->user();
