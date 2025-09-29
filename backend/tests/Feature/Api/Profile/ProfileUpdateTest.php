@@ -121,4 +121,18 @@ describe('profile: update', function () {
         'not string' => 24,
         'not gender string' => 'boy',
     ]);
+
+    it('rejects invalid is_private', function ($invalidParam) {
+        $this->actingAs($this->user);
+
+        $response = $this->patch('/api/v1/me', ['is_private' => $invalidParam]);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure(['message', 'errors' => ['is_private' => [['code', 'message']]]])
+            ->assertJsonFragment(['code' => 'boolean']);
+    })->with([
+        'empty' => '',
+        'not boolean' => 24,
+        'boolean as string' => 'true',
+    ]);
 });

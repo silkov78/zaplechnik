@@ -22,7 +22,7 @@ class ProfileUpdateRequest extends FormRequest
             'gender' => Rule::in(Gender::values()),
             'bio' => 'string|max:255',
             'telegram' => 'string|starts_with:@|max:100',
-//            'is_private' => 'boolean',
+            'is_private' => 'boolean',
         ];
     }
 }
