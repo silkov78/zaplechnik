@@ -6,8 +6,6 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 
-// TODO: Read about intersection tests
-
 uses(RefreshDatabase::class);
 
 beforeEach(function () {

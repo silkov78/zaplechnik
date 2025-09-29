@@ -79,7 +79,6 @@ class VisitsController extends Controller
         $visitInfo = $visit->first()->toArray();
         $visit->delete();
 
-        // TODO: change message according API
         return response()->json([
             'message' => 'User successfully deleted a visit.',
             'info' => [
