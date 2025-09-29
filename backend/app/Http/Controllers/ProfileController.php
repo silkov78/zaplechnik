@@ -22,15 +22,9 @@ class ProfileController extends Controller
     /**
      * Updates user's data. Handles attached avatar photo.
      */
-    public function update(Request $request): JsonResponse
+    public function update(ProfileUpdateRequest $request): JsonResponse
     {
-        $data = $request->validate([
-            'name' => 'string|max:50|min:1',
-            'email' => 'string|email|max:255',
-//            'avatar' =>
-            'telegram' => 'string|starts_with:@|max:100|min:2',
-            'bio' => 'string|max:255',
-        ]);
+        $data = $request->validated();
 
         if (!$data) {
             return response()->json([
