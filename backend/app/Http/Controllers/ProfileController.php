@@ -72,7 +72,7 @@ class ProfileController extends Controller
             }
         }
 
-        return response()->json(['how']);
+        return response()->json(['HAKUNA MATATA']);
 //        $data = $request->validated();
 //        $user = $request->user();
 //

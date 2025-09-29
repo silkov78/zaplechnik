@@ -107,4 +107,18 @@ describe('profile: update', function () {
         'not string' => 24,
         'string > 255 symbols' => str_repeat('hakuna.matata', 40),
     ]);
+
+    it('rejects invalid gender', function ($invalidParam) {
+        $this->actingAs($this->user);
+
+        $response = $this->patch('/api/v1/me', ['gender' => $invalidParam]);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure(['message', 'errors' => ['gender' => [['code', 'message']]]])
+            ->assertJsonFragment(['code' => 'enum']);
+    })->with([
+        'empty' => '',
+        'not string' => 24,
+        'not gender string' => 'boy',
+    ]);
 });
