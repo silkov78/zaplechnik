@@ -25,7 +25,8 @@ class ProfileController extends Controller
     public function update(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'name' => 'string|max:50',
+            'name' => 'string|max:50|min:1',
+            'email' => 'string|email|max:255',
         ]);
 
         if (!$data) {

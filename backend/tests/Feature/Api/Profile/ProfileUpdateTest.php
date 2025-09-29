@@ -52,4 +52,30 @@ describe('profile: update', function () {
             ])
             ->assertJsonFragment(['code' => 'unique']);
     });
+
+    it('rejects invalid email', function ($invalidParam) {
+        $this->actingAs($this->user);
+
+        $response = $this->patch('/api/v1/me', ['email' => $invalidParam]);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure(['message', 'errors' => ['email' => [['code', 'message']]]]);
+    })->with([
+        'empty email' => '',
+        'integer' => 24,
+        'not-email string' => 'hakuna.matata',
+    ]);
+
+//    it('rejects not-unique name', function () {
+//        $this->actingAs($this->user);
+//
+//        $response = $this->patch('/api/v1/me', ['name' => $this->user->name]);
+//
+//        $response->assertStatus(400)
+//            ->assertJsonStructure([
+//                'message',
+//                'errors' => ['name' => [['code', 'message']]]
+//            ])
+//            ->assertJsonFragment(['code' => 'unique']);
+//    });
 });
