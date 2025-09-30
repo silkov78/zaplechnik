@@ -10,6 +10,8 @@ beforeEach(function () {
         'name' => 'testUser',
         'email' => 'testUser@test.com',
     ]);
+
+    $this->anotherUser = User::factory()->create();
 });
 
 describe('profile: update', function () {
@@ -61,12 +63,12 @@ describe('profile: update', function () {
         'length > 50' => str_repeat('Ababab', 10),
     ]);
 
-    it('rejects not-unique name', function () {
+    it('rejects existing name (not current user)', function () {
         $this->actingAs($this->user);
 
-        $response = $this->patch('/api/v1/me', ['name' => $this->user->name]);
+        $response = $this->patch('/api/v1/me', ['name' => $this->anotherUser->name]);
 
-        $response->assertStatus(400)
+        $response->assertStatus(422)
             ->assertJsonStructure([
                 'message',
                 'errors' => ['name' => [['code', 'message']]]
@@ -87,12 +89,12 @@ describe('profile: update', function () {
         'not-email string' => 'hakuna.matata',
     ]);
 
-    it('rejects not-unique email', function () {
+    it('rejects existing email (not current user)', function () {
         $this->actingAs($this->user);
 
-        $response = $this->patch('/api/v1/me', ['email' => $this->user->email]);
+        $response = $this->patch('/api/v1/me', ['email' => $this->anotherUser->email]);
 
-        $response->assertStatus(400)
+        $response->assertStatus(422)
             ->assertJsonStructure([
                 'message',
                 'errors' => ['email' => [['code', 'message']]]
