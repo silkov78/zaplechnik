@@ -41,6 +41,48 @@ describe('profile: update', function () {
             ]);
     });
 
+    it('updates all fields successfully', function () {
+        $this->actingAs($this->currentUser);
+
+        $data = [
+            'name' => 'hakunaMatata',
+            'email' => 'hakunaMatata@test.com',
+            'avatar' => UploadedFile::fake()->image('new-avatar.png', 200, 200)->size(10),
+            'telegram' => '@hakunaMatata',
+            'bio' => 'i like hakunaMatata',
+            'gender' => 'male',
+            'is_private' => false,
+        ];
+
+        $response = $this->patch('/api/v1/me', $data);
+
+        $this->assertDatabaseHas('users', [
+            'user_id' => $this->currentUser->user_id,
+            'bio' => 'i like hakunaMatata',
+        ]);
+
+
+        $avatarUrl = $response->json('data.avatarUrl');
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data' => [
+                    'name', 'email', 'avatarUrl', 'telegram',
+                    'bio', 'gender', 'is_private',
+                ],
+            ])
+            ->assertJsonFragment([
+                'name' => 'hakunaMatata',
+                'email' => 'hakunaMatata@test.com',
+                'telegram' => '@hakunaMatata',
+                'bio' => 'i like hakunaMatata',
+                'gender' => 'male',
+                'is_private' => false,
+            ]);
+
+        $this->assertStringContainsString('storage/avatars', $avatarUrl);
+    });
+
     it('allows current name of current user', function () {
         $this->actingAs($this->currentUser);
 
