@@ -204,6 +204,10 @@ return [
         'code' => 'decimal',
         'message' => 'The :attribute field must have :decimal decimal places.',
     ],
+    'dimensions' => [
+        'code' => 'dimensions',
+        'message' => 'The :attribute field has invalid image dimensions.',
+    ],
     'email' => [
         'code' => 'email',
         'message' => 'The :attribute field must be a valid email address.',
