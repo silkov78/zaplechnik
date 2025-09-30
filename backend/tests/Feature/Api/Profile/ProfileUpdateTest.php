@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->user = User::factory()->create([
+    $this->currentUser = User::factory()->create([
         'name' => 'testUser',
         'email' => 'testUser@test.com',
     ]);
@@ -16,14 +16,14 @@ beforeEach(function () {
 
 describe('profile: update', function () {
     it('updates one field successfully', function () {
-        $this->actingAs($this->user);
+        $this->actingAs($this->currentUser);
 
         $response = $this->patch('/api/v1/me', [
             'name' => 'hakunaMatata',
         ]);
 
         $this->assertDatabaseHas('users', [
-            'user_id' => $this->user->user_id,
+            'user_id' => $this->currentUser->user_id,
             'name' => 'hakunaMatata',
         ]);
 
@@ -35,12 +35,28 @@ describe('profile: update', function () {
             ]);
     });
 
+    it('allows current name of current user', function () {
+        $this->actingAs($this->currentUser);
+
+        $response = $this->patch('/api/v1/me', ['name' => $this->currentUser->name]);
+
+        $response->assertStatus(200);
+    });
+
+    it('allows current email of current user', function () {
+        $this->actingAs($this->currentUser);
+
+        $response = $this->patch('/api/v1/me', ['name' => $this->currentUser->email]);
+
+        $response->assertStatus(200);
+    });
+
     it('rejects not-authenticated user', function () {
         $this->getJson('/api/v1/me')->assertStatus(401);
     });
 
     it('rejects empty body', function () {
-        $this->actingAs($this->user);
+        $this->actingAs($this->currentUser);
 
         $this->patch('/api/v1/me', [])
             ->assertStatus(422)
@@ -50,7 +66,7 @@ describe('profile: update', function () {
     });
 
     it('rejects invalid name', function ($invalidParam) {
-        $this->actingAs($this->user);
+        $this->actingAs($this->currentUser);
 
         $response = $this->patch('/api/v1/me', ['name' => $invalidParam]);
 
@@ -64,7 +80,7 @@ describe('profile: update', function () {
     ]);
 
     it('rejects existing name (not current user)', function () {
-        $this->actingAs($this->user);
+        $this->actingAs($this->currentUser);
 
         $response = $this->patch('/api/v1/me', ['name' => $this->anotherUser->name]);
 
@@ -77,7 +93,7 @@ describe('profile: update', function () {
     });
 
     it('rejects invalid email', function ($invalidParam) {
-        $this->actingAs($this->user);
+        $this->actingAs($this->currentUser);
 
         $response = $this->patch('/api/v1/me', ['email' => $invalidParam]);
 
@@ -90,7 +106,7 @@ describe('profile: update', function () {
     ]);
 
     it('rejects existing email (not current user)', function () {
-        $this->actingAs($this->user);
+        $this->actingAs($this->currentUser);
 
         $response = $this->patch('/api/v1/me', ['email' => $this->anotherUser->email]);
 
@@ -105,7 +121,7 @@ describe('profile: update', function () {
     // TODO: test avatar field
 
     it('rejects invalid telegram', function ($invalidParam) {
-        $this->actingAs($this->user);
+        $this->actingAs($this->currentUser);
 
         $response = $this->patch('/api/v1/me', ['telegram' => $invalidParam]);
 
@@ -118,7 +134,7 @@ describe('profile: update', function () {
     ]);
 
     it('rejects invalid bio', function ($invalidParam) {
-        $this->actingAs($this->user);
+        $this->actingAs($this->currentUser);
 
         $response = $this->patch('/api/v1/me', ['bio' => $invalidParam]);
 
@@ -131,7 +147,7 @@ describe('profile: update', function () {
     ]);
 
     it('rejects invalid gender', function ($invalidParam) {
-        $this->actingAs($this->user);
+        $this->actingAs($this->currentUser);
 
         $response = $this->patch('/api/v1/me', ['gender' => $invalidParam]);
 
@@ -145,7 +161,7 @@ describe('profile: update', function () {
     ]);
 
     it('rejects invalid is_private', function ($invalidParam) {
-        $this->actingAs($this->user);
+        $this->actingAs($this->currentUser);
 
         $response = $this->patch('/api/v1/me', ['is_private' => $invalidParam]);
 
