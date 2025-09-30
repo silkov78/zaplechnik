@@ -8,9 +8,13 @@ use Illuminate\Support\Facades\Storage;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
+    Storage::fake('local');
+    Storage::put('avatars/old-avatar.png', 'content');
+
     $this->currentUser = User::factory()->create([
         'name' => 'testUser',
         'email' => 'testUser@test.com',
+        'avatar' => 'old-avatar.png',
     ]);
 
     $this->anotherUser = User::factory()->create();
@@ -135,6 +139,18 @@ describe('profile: update', function () {
         'not image file' => fn () => UploadedFile::fake()->create('document.pdf'),
         'file size > 2048 KB' => fn () => UploadedFile::fake()->create('photo.jpg')->size(10000),
     ]);
+
+    it('deletes existing avatar when uploading new one', function () {
+        Storage::fake('local');
+        $this->actingAs($this->currentUser);
+
+        $response = $this->patch('/api/v1/me', [
+            'avatar' => UploadedFile::fake()->image('new-avatar.png'),
+        ]);
+
+        Storage::assertMissing('avatars/old-avatar.png');
+        Storage::assertMissing('avatars/new-avatar.jpg');
+    });
 
     it('rejects invalid telegram', function ($invalidParam) {
         $this->actingAs($this->currentUser);
