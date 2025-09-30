@@ -20,7 +20,8 @@ class ProfileUpdateRequest extends FormRequest
         return [
             'name' => ['string', 'max:50', 'min:1', Rule::unique('users')->ignore($user)],
             'email' => ['string', 'email', 'max:255', Rule::unique('users')->ignore($user)],
-            'avatar' => 'file|image|mimes:jpeg,png,jpg,bmp,gif|dimensions:ratio=1/1|max:2048',
+            // TODO: add dimensions validation when front will be ready
+            'avatar' => 'file|image|mimes:jpeg,png,jpg,bmp,gif|max:2048',
             'gender' => Rule::in(Gender::values()),
             'bio' => 'string|max:255',
             'telegram' => 'string|starts_with:@|max:100',
