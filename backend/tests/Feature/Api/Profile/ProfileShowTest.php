@@ -31,4 +31,16 @@ describe('profile: store', function () {
             ])
             ->assertJsonFragment(['name' => $this->user->name]);
     });
+
+    it('returns default avatarUrl', function () {
+        $this->actingAs($this->user);
+
+        $response = $this->getJson('/api/v1/me');
+
+        $response->assertStatus(200);
+
+        $this->assertStringContainsString(
+            'images/default-avatar.png', $response['data']['avatarUrl']
+        );
+    });
 });
