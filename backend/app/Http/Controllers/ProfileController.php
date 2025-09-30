@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Resources\ProfileShowResource;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -41,58 +42,17 @@ class ProfileController extends Controller
             ], 422);
         }
 
-        if (isset($data['name'])) {
-            if (User::where('name', $data['name'])->exists()) {
-                return response()->json([
-                    'message' => 'The given data was invalid.',
-                    'errors' => [
-                        'name' => [
-                            [
-                                'code' => 'unique',
-                                'message' => 'The name has already been taken.',
-                            ]
-                        ],
-                    ],
-                ], 400);
-            }
-        }
-
-        if (isset($data['email'])) {
-            if ($data['email'] && User::where('email', $data['email'])->exists()) {
-                return response()->json([
-                    'message' => 'The given data was invalid.',
-                    'errors' => [
-                        'email' => [
-                            [
-                                'code' => 'unique',
-                                'message' => 'The email has already been taken.',
-                            ]
-                        ],
-                    ],
-                ], 400);
-            }
-        }
-
         if ($request->hasFile('avatar')) {
-            if ($user->avatar && Storage::exists('avatars/' . $user->avatar)) {
-                Storage::delete('avatars/' . $user->avatar);
-            }
-
-            $avatarFile = $request->file('avatar');
-            $avatarFileName = $avatarFile->hashName();
-            $avatarFile->storeAs('avatars', $avatarFileName);
-
-            $data['avatar'] = $avatarFileName;
+            $data['avatar'] = $this->handleAvatarUpload(
+                $user, $request->file('avatar')
+            );
         }
 
-        $request->user()->update($data);
+        $user->update($data);
 
-        if (isset($data['avatar'])) {
-            unset($data['avatar']);
-            $data['avatarUrl'] = $user->avatarUrl;
-        }
-
-        return response()->json(['data' => $data]);
+        return response()->json([
+            'data' => $this->formatUserData($user, $data),
+        ]);
     }
 
     /**
@@ -115,5 +75,27 @@ class ProfileController extends Controller
             'message' => 'User successfully deleted an account.',
             'info' => ['user_id' => $userId],
         ]);
+    }
+
+    protected function handleAvatarUpload(User $user, UploadedFile $avatarFile): string
+    {
+        if ($user->avatar && Storage::exists('avatars/' . $user->avatar)) {
+            Storage::delete('avatars/' . $user->avatar);
+        }
+
+        $avatarFileName = $avatarFile->hashName();
+        $avatarFile->storeAs('avatars', $avatarFileName);
+
+        return $avatarFileName;
+    }
+
+    protected function formatUserData(User $user, array $data): array
+    {
+        if (isset($data['avatar'])) {
+            $data['avatarUrl'] = $user->avatarUrl;
+            unset($data['avatar']);
+        }
+
+        return $data;
     }
 }

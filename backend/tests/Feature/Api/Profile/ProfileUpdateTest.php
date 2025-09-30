@@ -2,6 +2,8 @@
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
 
@@ -118,7 +120,21 @@ describe('profile: update', function () {
             ->assertJsonFragment(['code' => 'unique']);
     });
 
-    // TODO: test avatar field
+    it('rejects invalid avatar', function ($invalidParam) {
+        Storage::fake('local');
+        $this->actingAs($this->currentUser);
+
+        $response = $this->patch('/api/v1/me', [
+            'avatar' => $invalidParam,
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors('avatar');
+    })->with([
+        'string avatar' => 'hakunaMatata.jpg',
+        'not image file' => fn () => UploadedFile::fake()->create('document.pdf'),
+        'file size > 2048 KB' => fn () => UploadedFile::fake()->create('photo.jpg')->size(10000),
+    ]);
 
     it('rejects invalid telegram', function ($invalidParam) {
         $this->actingAs($this->currentUser);
