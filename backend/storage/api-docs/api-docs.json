@@ -1,0 +1,1656 @@
+{
+  "openapi": "3.0.0",
+  "servers": [
+    {
+      "description": "Localhost",
+      "url": "http://localhost:8000/api/v1"
+    }
+  ],
+  "info": {
+    "description": "Описание API сайта Zaplechnik",
+    "version": "1.0.0",
+    "title": "API Zaplechnik",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "tags": [
+    {
+      "name": "registered user",
+      "description": "Зарегистрированный пользователь"
+    },
+    {
+      "name": "unregistered user",
+      "description": "Незарегистрированный пользователь"
+    }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "tags": [
+          "unregistered user"
+        ],
+        "summary": "Регистрация пользователя",
+        "description": "Регистрация пользователя с использованием электронной почты, пароля и никнейма",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Никнейм пользователя",
+                    "example": "Nastachka"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Электронная почта пользователя",
+                    "example": "nasta@gmail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "description": "Пароль пользователя",
+                    "example": "passworD123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User successfully registered"
+                    },
+                    "user": {
+                      "$ref": "#/components/schemas/RedUserInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Register_422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Server Error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "unregistered user"
+        ],
+        "summary": "Вход пользователя",
+        "description": "Вход пользователя с использованием электронной почты и пароля",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Электронная почта пользователя",
+                    "example": "nasta@gmail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "description": "Пароль пользователя",
+                    "example": "passworD123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User successfully login"
+                    },
+                    "user": {
+                      "$ref": "#/components/schemas/Login_201"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Login_400"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Login_422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Server Error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logout": {
+      "post": {
+        "tags": [
+          "registered user"
+        ],
+        "summary": "Выход пользователя",
+        "description": "Выход пользователя из системы",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешная аутентификация",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User logged out successfully"
+                    },
+                    "info": {
+                      "type": "object",
+                      "properties": {
+                        "user_id": {
+                          "type": "integer",
+                          "example": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error_401"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Server Error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/campgrounds": {
+      "get": {
+        "tags": [
+          "unregistered user",
+          "registered user"
+        ],
+        "summary": "Отображение всех стоянок",
+        "description": "Позволяет отобразить все стоянки на базовой карте для неавторизованных и авторизованных пользователей",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Campgrounds"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Server Error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/campgrounds/visited": {
+      "get": {
+        "tags": [
+          "registered user"
+        ],
+        "summary": "Отображение посещенных стоянок",
+        "description": "Позволяет отобразить все посещенные авторизованным пользователем стоянки на базовой карте",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Campgrounds"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error_401"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Server Error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/visits": {
+      "post": {
+        "tags": [
+          "registered user"
+        ],
+        "summary": "Отметка стоянки как посещенной",
+        "description": "Позволяет авторизованному пользователю отметить стоянку как посещенную",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "campground_id",
+                  "email"
+                ],
+                "properties": {
+                  "campground_id": {
+                    "type": "integer",
+                    "description": "Уникальный идентификатор стоянки",
+                    "example": 1
+                  },
+                  "visit_date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Дата и время посещения стоянки",
+                    "example": "2025-08-09"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User successfully made a visit"
+                    },
+                    "info": {
+                      "type": "object",
+                      "properties": {
+                        "visit_id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "user_id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "campground_id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "visit_date": {
+                          "type": "string",
+                          "format": "date",
+                          "example": "2025-08-09"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error_401"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Visits_422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Server Error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "registered user"
+        ],
+        "summary": "Удаление стоянки из посещенных",
+        "description": "Позволяет авторизованному пользователю удалить стоянку из посещенных",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "campground_id",
+            "description": "Уникальный идентификатор стоянки",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User successfully deleted a visit"
+                    },
+                    "info": {
+                      "type": "object",
+                      "properties": {
+                        "user_id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "visit_id": {
+                          "type": "integer",
+                          "example": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error_401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Visits_delete_404"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Visits_delete_422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Server Error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me": {
+      "get": {
+        "tags": [
+          "registered user"
+        ],
+        "summary": "Просмотр данных пользователя",
+        "description": "Позволяет авторизованному пользователю просмотреть данные профиля",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Me_info"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error_401"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Server Error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "registered user"
+        ],
+        "summary": "Редактирование данных пользователя",
+        "description": "Позволяет авторизованному пользователю отредактировать данные профиля",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Никнейм пользователя",
+                    "example": "Nastachka"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Электронная почта пользователя",
+                    "example": "nasta@gmail.com"
+                  },
+                  "avatar": {
+                    "type": "string",
+                    "description": "Аватар пользователя",
+                    "example": "zaplechnik.com/images/default-avatar.png"
+                  },
+                  "telegram": {
+                    "type": "string",
+                    "description": "Телеграм пользователя",
+                    "example": "@fesun"
+                  },
+                  "bio": {
+                    "type": "string",
+                    "description": "Описание профиля",
+                    "example": "туда-сюда"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "description": "Пол пользователя",
+                    "example": "female"
+                  },
+                  "is_private": {
+                    "type": "boolean",
+                    "description": "Приватность профиля",
+                    "example": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Me_data"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error_401"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Me_422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Server Error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "registered user"
+        ],
+        "summary": "Удаление аккаунта пользователя",
+        "description": "Позволяет авторизованному пользователю удалить свой аккаунт",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User successfully deleted an account"
+                    },
+                    "info": {
+                      "type": "object",
+                      "properties": {
+                        "user_id": {
+                          "type": "integer",
+                          "example": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error_401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Server Error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "RedUserInfo": {
+        "type": "object",
+        "required": [
+          "user_id",
+          "name",
+          "email"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "example": 1,
+            "description": "Идентификатор пользователя"
+          },
+          "name": {
+            "type": "string",
+            "example": "Nasta",
+            "description": "Никнейм пользователя"
+          },
+          "email": {
+            "type": "string",
+            "example": "nasta@gmail.com",
+            "description": "Электронная почта пользователя"
+          }
+        }
+      },
+      "Login_201": {
+        "type": "object",
+        "required": [
+          "token",
+          "user_id",
+          "expires_in"
+        ],
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEyMzQiLCJ1c2VybmFtZSI6ImJpcnNjaG5lcnNvZXZfaGVsbG9fc2VjdXJpdHkiLCJyb2xlIjoidXNlciJ9.cZL6FJ2EKzK4gSKpPVo5v6poE1T9m3MxoA3on8RHkJ2I",
+            "description": "Токен"
+          },
+          "user_id": {
+            "type": "integer",
+            "example": 1,
+            "description": "Идентификатор пользователя"
+          },
+          "expires_in": {
+            "type": "integer",
+            "example": 3600,
+            "description": "Время жизни токена"
+          }
+        }
+      },
+      "Me_data": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "Nastachka Fesun"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "example": "nasta@gmail.com"
+              },
+              "avatarUrl": {
+                "type": "string",
+                "example": "zaplechnik.com/images/default-avatar.png"
+              },
+              "telegram": {
+                "type": "string",
+                "example": "@nastachka"
+              },
+              "bio": {
+                "type": "string",
+                "example": "lalalala"
+              },
+              "gender": {
+                "type": "string",
+                "example": "female"
+              },
+              "is_private": {
+                "type": "boolean",
+                "example": true
+              }
+            }
+          }
+        }
+      },
+      "Me_info": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "user_id",
+              "name",
+              "rank",
+              "email",
+              "gender",
+              "avatarUrl",
+              "telegram",
+              "bio",
+              "info"
+            ],
+            "properties": {
+              "user_id": {
+                "type": "integer",
+                "example": 1
+              },
+              "name": {
+                "type": "string",
+                "example": "Nastachka Fesun"
+              },
+              "rank": {
+                "type": "string",
+                "example": "турыстка"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "example": "nasta@gmail.com"
+              },
+              "gender": {
+                "type": "string",
+                "example": "female"
+              },
+              "avatarUrl": {
+                "type": "string",
+                "example": "zaplechnik.com/images/default-avatar.png"
+              },
+              "telegram": {
+                "type": "string",
+                "example": "@nastachka"
+              },
+              "bio": {
+                "type": "string",
+                "example": "lalalala"
+              },
+              "info": {
+                "type": "object",
+                "properties": {
+                  "visits_count": {
+                    "type": "integer",
+                    "example": 15
+                  },
+                  "created_at": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2023-05-15T14:30:00Z"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Campgrounds": {
+        "type": "object",
+        "required": [
+          "type",
+          "features",
+          "geometry"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "FeatureCollection",
+            "description": "Объект JSON, содержащий коллекцию функций GeoJSON"
+          },
+          "features": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "type",
+                "properties",
+                "geometry"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "Feature"
+                },
+                "properties": {
+                  "type": "object",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Camground_properties"
+                    }
+                  ]
+                },
+                "geometry": {
+                  "$ref": "#/components/schemas/Camground_geometry"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Camground_properties": {
+        "type": "object",
+        "required": [
+          "campground_id",
+          "osm_name",
+          "images",
+          "osm_description",
+          "osm_website",
+          "osm_fee",
+          "firewood",
+          "osm_fireplace",
+          "osm_picnic_table",
+          "osm_toilets",
+          "osm_access",
+          "district",
+          "region"
+        ],
+        "properties": {
+          "campground_id": {
+            "type": "integer",
+            "example": 1,
+            "description": "Уникальный идентификатор стоянки"
+          },
+          "osm_name": {
+            "type": "string",
+            "example": "Антонінзберг",
+            "description": "Название стоянки (OSM)"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "example": "/2/photo.img",
+              "description": "Ссылка на фотографию стоянки"
+            }
+          },
+          "osm_description": {
+            "type": "string",
+            "example": "ля-ля тополя",
+            "description": "Описание стоянки (OSM)"
+          },
+          "osm_website": {
+            "type": "string",
+            "example": "http://website.by",
+            "description": "Веб-сайт стоянки (OSM)"
+          },
+          "osm_fee": {
+            "type": "boolean",
+            "example": true,
+            "description": "Платная/бесплатная стоянка (OSM)"
+          },
+          "firewood": {
+            "type": "boolean",
+            "example": true,
+            "description": "Наличие дров"
+          },
+          "osm_fireplace": {
+            "type": "boolean",
+            "example": true,
+            "description": "Наличие места для розжига (OSM)"
+          },
+          "osm_picnic_table": {
+            "type": "boolean",
+            "example": true,
+            "description": "Наличие стола (OSM)"
+          },
+          "osm_toilets": {
+            "type": "boolean",
+            "example": true,
+            "description": "Наличие туалета (OSM)"
+          },
+          "osm_access": {
+            "type": "string",
+            "example": "public",
+            "description": "Доступность стоянки (OSM)",
+            "enum": [
+              "public",
+              "private"
+            ]
+          },
+          "district": {
+            "type": "string",
+            "example": "Мядзульскі раён",
+            "description": "Район, в которой рассположена стоянка"
+          },
+          "region": {
+            "type": "string",
+            "example": "Мінская вобласць",
+            "description": "Область, в которой рассположена стоянка"
+          }
+        }
+      },
+      "Camground_geometry": {
+        "type": "object",
+        "required": [
+          "type",
+          "coordinates"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "Point"
+          },
+          "osm_name": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "example": [
+                28.75955,
+                55.32165
+              ]
+            }
+          }
+        }
+      },
+      "Error_401": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Unauthorized.",
+            "description": "Общее сообщение об ошибке"
+          },
+          "errors": {
+            "type": "object",
+            "properties": {
+              "token": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Код ошибки аутентификации"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Сообщение об ошибке"
+                    }
+                  }
+                }
+              }
+            },
+            "required": [
+              "token"
+            ]
+          }
+        },
+        "example": {
+          "message": "Unauthorized.",
+          "errors": {
+            "token": [
+              {
+                "code": "error code",
+                "message": "error message"
+              }
+            ]
+          }
+        }
+      },
+      "Register_422": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "The given data was invalid.",
+            "description": "Общее сообщение об ошибке"
+          },
+          "errors": {
+            "type": "object",
+            "description": "Детализированные ошибки по полям",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "description": "Код ошибки валидации"
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "Сообщение об ошибке"
+                  }
+                }
+              }
+            },
+            "anyOf": [
+              {
+                "required": [
+                  "name"
+                ]
+              },
+              {
+                "required": [
+                  "email"
+                ]
+              },
+              {
+                "required": [
+                  "password"
+                ]
+              },
+              {
+                "required": [
+                  "other_field"
+                ]
+              }
+            ]
+          }
+        },
+        "example": {
+          "message": "The given data was invalid.",
+          "errors": {
+            "name": [
+              {
+                "code": "error code",
+                "message": "error message"
+              }
+            ],
+            "email": [
+              {
+                "code": "error code",
+                "message": "error message"
+              }
+            ],
+            "password": [
+              {
+                "code": "error code",
+                "message": "error message"
+              }
+            ]
+          }
+        }
+      },
+      "Login_422": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "The given data was invalid.",
+            "description": "Общее сообщение об ошибке"
+          },
+          "errors": {
+            "type": "object",
+            "description": "Детализированные ошибки по полям",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "description": "Код ошибки валидации"
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "Сообщение об ошибке"
+                  }
+                }
+              }
+            },
+            "anyOf": [
+              {
+                "required": [
+                  "email"
+                ]
+              },
+              {
+                "required": [
+                  "password"
+                ]
+              }
+            ]
+          }
+        },
+        "example": {
+          "message": "The given data was invalid.",
+          "errors": {
+            "email": [
+              {
+                "code": "error code",
+                "message": "error message"
+              }
+            ],
+            "password": [
+              {
+                "code": "error code",
+                "message": "error message"
+              }
+            ]
+          }
+        }
+      },
+      "Visits_422": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "The given data was invalid.",
+            "description": "Общее сообщение об ошибке"
+          },
+          "errors": {
+            "type": "object",
+            "description": "Детализированные ошибки по полям",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "description": "Код ошибки валидации"
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "Сообщение об ошибке"
+                  }
+                }
+              }
+            },
+            "anyOf": [
+              {
+                "required": [
+                  "campground_id"
+                ]
+              },
+              {
+                "required": [
+                  "visit_date"
+                ]
+              }
+            ]
+          }
+        },
+        "example": {
+          "message": "The given data was invalid.",
+          "errors": {
+            "campground_id": [
+              {
+                "code": "error code",
+                "message": "error message"
+              }
+            ],
+            "visit_date": [
+              {
+                "code": "error code",
+                "message": "error message"
+              }
+            ]
+          }
+        }
+      },
+      "Visits_delete_422": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "The given data was invalid.",
+            "description": "Общее сообщение об ошибке"
+          },
+          "errors": {
+            "type": "object",
+            "description": "Детализированные ошибки по полям",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "description": "Код ошибки валидации"
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "Сообщение об ошибке"
+                  }
+                }
+              }
+            },
+            "anyOf": [
+              {
+                "required": [
+                  "campground_id"
+                ]
+              }
+            ]
+          }
+        },
+        "example": {
+          "message": "The given data was invalid.",
+          "errors": {
+            "campground_id": [
+              {
+                "code": "error code",
+                "message": "error message"
+              }
+            ]
+          }
+        }
+      },
+      "Visits_delete_404": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Resource is not found.",
+            "description": "Общее сообщение об ошибке"
+          },
+          "errors": {
+            "type": "object",
+            "description": "Детализированные ошибки по полям",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "description": "Код ошибки валидации"
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "Сообщение об ошибке"
+                  }
+                }
+              }
+            },
+            "anyOf": [
+              {
+                "required": [
+                  "campground_id"
+                ]
+              }
+            ]
+          }
+        },
+        "example": {
+          "message": "Resource is not found.",
+          "errors": {
+            "campground_id": [
+              {
+                "code": "error code",
+                "message": "error message"
+              }
+            ]
+          }
+        }
+      },
+      "Me_422": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "The given data was invalid.",
+            "description": "Общее сообщение об ошибке"
+          },
+          "errors": {
+            "type": "object",
+            "description": "Детализированные ошибки по полям",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "description": "Код ошибки валидации"
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "Сообщение об ошибке"
+                  }
+                }
+              }
+            },
+            "anyOf": [
+              {
+                "required": [
+                  "name"
+                ]
+              },
+              {
+                "required": [
+                  "email"
+                ]
+              },
+              {
+                "required": [
+                  "avatar"
+                ]
+              },
+              {
+                "required": [
+                  "telegram"
+                ]
+              },
+              {
+                "required": [
+                  "bio"
+                ]
+              },
+              {
+                "required": [
+                  "gender"
+                ]
+              },
+              {
+                "required": [
+                  "is_private"
+                ]
+              },
+              {
+                "required": [
+                  "fields"
+                ]
+              }
+            ]
+          }
+        },
+        "example": {
+          "message": "Resource is not found.",
+          "errors": {
+            "name": [
+              {
+                "code": "error code",
+                "message": "error message"
+              }
+            ],
+            "email": [
+              {
+                "code": "error code",
+                "message": "error message"
+              }
+            ],
+            "avatar": [
+              {
+                "code": "error code",
+                "message": "error message"
+              }
+            ],
+            "telegram": [
+              {
+                "code": "error code",
+                "message": "error message"
+              }
+            ],
+            "bio": [
+              {
+                "code": "error code",
+                "message": "error message"
+              }
+            ],
+            "gender": [
+              {
+                "code": "error code",
+                "message": "error message"
+              }
+            ],
+            "is_private": [
+              {
+                "code": "error code",
+                "message": "error message"
+              }
+            ],
+            "fields": [
+              {
+                "code": "error code",
+                "message": "error message"
+              }
+            ]
+          }
+        }
+      },
+      "Login_400": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "The given data was invalid.",
+            "description": "Общее сообщение об ошибке"
+          },
+          "errors": {
+            "type": "object",
+            "description": "Детализированные ошибки по полям",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "description": "Код ошибки валидации"
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "Сообщение об ошибке"
+                  }
+                }
+              }
+            },
+            "anyOf": [
+              {
+                "required": [
+                  "credentials"
+                ]
+              }
+            ]
+          }
+        },
+        "example": {
+          "message": "Resource is not found.",
+          "errors": {
+            "credentials": [
+              {
+                "code": "error code",
+                "message": "error message"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}
