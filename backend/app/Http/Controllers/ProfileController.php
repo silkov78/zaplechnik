@@ -2,138 +2,99 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Concerns\GeneratesGeoJsonArray;
 use App\Http\Requests\ProfileUpdateRequest;
-use App\Http\Resources\ProfileResource;
-use App\Http\Resources\StoreVisitResource;
-use App\Models\Visit;
+use App\Http\Resources\ProfileShowResource;
+use App\Models\User;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
-    use GeneratesGeoJsonArray;
-
-    public function show(Request $request): ProfileResource
+    /**
+     * Shows profile data of authenticated user.
+     */
+    public function show(Request $request): ProfileShowResource
     {
-        return new ProfileResource($request->user());
+        return new ProfileShowResource($request->user());
     }
 
     /**
-     * Updates user's data
-     * Handles attached avatar photo
+     * Updates user's data. Handles attached avatar photo.
      */
     public function update(ProfileUpdateRequest $request): JsonResponse
     {
         $data = $request->validated();
         $user = $request->user();
 
+        if (!$data) {
+            return response()->json([
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'fields' => [
+                        [
+                            'code' => 'empty',
+                            'message' => 'At least one field must be provided.',
+                        ]
+                    ],
+                ],
+            ], 422);
+        }
+
         if ($request->hasFile('avatar')) {
-            if ($user->avatar && Storage::exists('avatars/' . $user->avatar)) {
-                Storage::delete('avatars/' . $user->avatar);
-            }
-
-            $avatarFile = $request->file('avatar');
-            $avatarFileName = $avatarFile->hashName();
-            $avatarFile->storeAs('avatars', $avatarFileName);
-
-            $data['avatar'] = $avatarFileName;
+            $data['avatar'] = $this->handleAvatarUpload(
+                $user, $request->file('avatar')
+            );
         }
 
-        $request->user()->update($data);
+        $user->update($data);
 
-        if (isset($data['avatar'])) {
-            unset($data['avatar']);
-            $data['avatarUrl'] = $user->avatarUrl;
-        }
-
-        return response()->json(['data' => $data]);
+        return response()->json([
+            'data' => $this->formatUserData($user, $data),
+        ]);
     }
 
     /**
-     * Deletes user's data (account)
-     * Delete avatar photo from storage
+     * Deletes user's data (account). Delete avatar photo from storage.
      */
     public function destroy(Request $request): JsonResponse
     {
         $user = $request->user();
-        $userId = $user->user_id;
+        $user->tokens()->delete();
+        $user->delete();
 
+        if ($user->avatar) {
+            Storage::delete('avatars/' . $user->avatar);
+        }
+
+        return response()->json([
+            'message' => 'User successfully deleted an account.',
+            'info' => [
+                'user_id' => $user->user_id,
+            ],
+        ]);
+    }
+
+    protected function handleAvatarUpload(User $user, UploadedFile $avatarFile): string
+    {
         if ($user->avatar && Storage::exists('avatars/' . $user->avatar)) {
             Storage::delete('avatars/' . $user->avatar);
         }
 
-        $user->tokens()->delete();
+        $avatarFileName = $avatarFile->hashName();
+        $avatarFile->storeAs('avatars', $avatarFileName);
 
-        $user->delete();
-
-        return response()->json([
-            'message' => 'User successfully deleted an account.',
-            'info' => ['user_id' => $userId],
-        ]);
+        return $avatarFileName;
     }
 
-    /**
-     * Returns campgrounds visited by authenticated user
-     */
-    public function visitedCampgrounds(Request $request): JsonResponse
+    protected function formatUserData(User $user, array $data): array
     {
-        $visitedCampgroundsArray = $this->getFeatureCollectionArray(
-            $request->user()->campgrounds, 'osm_geometry'
-        );
-
-        return response()->json($visitedCampgroundsArray);
-    }
-
-    /**
-     * Stores new visit record
-     * Each visit has unique pair of user_id and campground_id
-     */
-    public function storeVisit(Request $request): StoreVisitResource|JsonResponse
-    {
-        $data = $request->validate([
-            'campground_id' => 'required|integer|exists:campgrounds',
-            'visit_date' => 'date:Y-m-d',
-        ]);
-
-        $data['user_id'] = $request->user()->user_id;
-
-        $visit = Visit::create($data);
-
-        return new StoreVisitResource($visit);
-    }
-
-    /**
-     * Destroys visit record
-     * Accepts required campground_id from query string
-     */
-    public function destroyVisit(Request $request): JsonResponse
-    {
-        $userId = $request->user()->user_id;
-        $query = $request->validate([
-            'campground_id' => 'required|integer|exists:campgrounds',
-        ]);
-
-        $visit = Visit::where([
-            'user_id' => $userId,
-            'campground_id' => $query['campground_id'],
-        ]);
-
-        if (!$visit->exists()) {
-            return response()->json([
-                'message' => 'Visit with provided user_id and campground_id not found.',
-            ]);
+        if (isset($data['avatar'])) {
+            $data['avatarUrl'] = $user->avatarUrl;
+            unset($data['avatar']);
         }
 
-        $visit->delete();
-
-        return response()->json([
-            'message' => 'User successfully deleted a visit',
-            'info' => [
-                'user_id' => $userId,
-                'campground_id' => $query['campground_id'],
-            ],
-        ]);
+        return $data;
     }
 }

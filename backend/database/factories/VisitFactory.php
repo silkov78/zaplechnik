@@ -17,9 +17,9 @@ class VisitFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => $this->faker->numberBetween(1, 3),
+            'user_id' => $this->faker->numberBetween(2, 3),
             'campground_id' => $this->faker->numberBetween(1, 10),
-            'visit_date' => $this->faker->dateTimeBetween('-1 years', 'now'),
+            'visit_date' => $this->faker->date(),
             'created_at' => now(),
             'updated_at' => now(),
         ];

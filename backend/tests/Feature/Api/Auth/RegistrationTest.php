@@ -1,0 +1,157 @@
+<?php
+
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
+
+beforeEach(function () {
+    $this->user = User::factory()->create([
+        'name' => 'testUser',
+        'email' => 'testUser@test.com',
+    ]);
+});
+
+describe('registration', function () {
+    it('creates user successfully', function () {
+        $userData = [
+            'name' => 'petya',
+            'email' => 'petya@example.com',
+            'password' => 'Password4',
+        ];
+
+        $response = $this->postJson('/api/v1/register', $userData);
+
+        $this->assertDatabaseHas('users', [
+            'name' => 'petya',
+            'email' => 'petya@example.com'
+        ]);
+
+        $response->assertStatus(201)
+            ->assertJsonStructure([
+                'message',
+                'user' => ['user_id', 'name', 'email'],
+            ])
+            ->assertJsonFragment([
+                'message' => 'User successfully registered.'
+            ]);
+    });
+
+    it('rejects empty credentials', function ($invalidData) {
+        $response = $this->postJson('/api/v1/register', $invalidData);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure([
+                'message',
+                'errors' => [],
+            ])
+            ->assertJsonFragment([
+                'message' => 'The given data was invalid.',
+            ]);
+    })->with([
+        'missing credentials' => [[]],
+        'missing name' => [['email' => 'piotr@example.com', 'password' => 'Silkov78']],
+        'missing email' => [['name' => 'silkov78', 'password' => 'Silkov78']],
+        'missing password' => [['name' => 'silkov78', 'password' => 'Silkov78']],
+        'empty credentials' => [['name' => '', 'email' => '', 'password' => '']],
+    ]);
+
+    it('rejects invalid name', function ($invalidParam) {
+        $userData = [
+            'name' => $invalidParam,
+            'email' => 'piotr@example.com',
+            'password' => 'Silkov78'
+        ];
+
+        $response = $this->postJson('/api/v1/register', $userData);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure([
+                'message',
+                'errors' => [],
+            ])
+            ->assertJsonFragment([
+                'message' => 'The given data was invalid.',
+            ]);
+    })->with([
+        'empty name' => '',
+        'not string name' => 1,
+        '> 50 symbols name' => str_repeat('A', 51),
+    ]);
+
+    it('rejects invalid email', function ($invalidParam) {
+        $userData = [
+            'name' => 'testUser',
+            'email' => $invalidParam,
+            'password' => 'Silkov78'
+        ];
+
+        $response = $this->postJson('/api/v1/register', $userData);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure([
+                'message',
+                'errors' => [],
+            ])
+            ->assertJsonFragment([
+                'message' => 'The given data was invalid.',
+            ]);
+    })->with([
+        'empty email' => '',
+        'not string email' => 1,
+        '> 255 symbols email' => str_repeat('A', 260) . '@example.com',
+        'not email string' => 'testUser.com',
+    ]);
+
+    it('rejects existing name and email', function ($existingCredentials) {
+        $response = $this->postJson('/api/v1/register', $existingCredentials);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure([
+                'message',
+                'errors' => [],
+            ])
+            ->assertJsonFragment([
+                'message' => 'The given data was invalid.',
+            ]);
+    })->with([
+        'existing name' => [[
+            'name' => 'testUser',
+            'email' => 'piotr@example.com',
+            'password' => 'Silkov78',
+        ]],
+        'existing email' => [[
+            'name' => 'testUser',
+            'email' => 'testUser@test.com',
+            'password' => 'Silkov78',
+        ]],
+    ]);
+
+    it('rejects invalid password', function ($invalidParam) {
+        $userData = [
+            'name' => 'testUser',
+            'email' => 'test@example.com',
+            'password' => $invalidParam,
+        ];
+
+        $response = $this->postJson('/api/v1/register', $userData);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure([
+                'message',
+                'errors' => [],
+            ])
+            ->assertJsonFragment([
+                'message' => 'The given data was invalid.',
+            ]);
+    })->with([
+        'empty password' => '',
+        'not string password' => 1,
+        '< 8 symbols password' => 'Pass5',
+        '> 255 symbols password' => str_repeat('A', 260) . 'Pass5',
+        'doesnt contain numbers' => 'Password',
+        'doesnt contain letters' => '123456789',
+        'doesnt contain upper case' => 'password123',
+        'doesnt contain lower case' => 'PASSWORD123',
+    ]);
+});

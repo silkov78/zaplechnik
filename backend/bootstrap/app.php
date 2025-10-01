@@ -1,9 +1,12 @@
 <?php
 
+use App\Exceptions\ApiTokenException;
+use App\Http\Middleware\ForceJsonRequestHeader;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use App\Http\Middleware\ForceJsonRequestHeader;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,12 +16,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->alias([
-            'custom.auth' => \App\Http\Middleware\CustomAuthMiddleware::class,
-        ]);
-
         $middleware->append(ForceJsonRequestHeader::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Custom token error message
+        $exceptions->render(function (AuthenticationException $e, Request $request): void {
+            ApiTokenException::checkToken($request);
+        });
     })->create();

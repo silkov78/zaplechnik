@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -23,30 +21,29 @@ class AuthController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'User created successfully',
+            'message' => 'User successfully registered.',
             'user' => $user->only('user_id', 'name', 'email'),
         ], 201);
     }
 
-    public function login(LoginRequest $request): JsonResponse
+    public function login(Request $request): JsonResponse
     {
-        $data = $request->validated();
+        $data = $request->validate([
+            'email' => 'required',
+            'password' => 'required',
+        ]);
 
         $user = User::where('email', $data['email'])->first();
 
-        if (!$user) {
+        if (!$user || !Hash::check($data['password'], $user->password)) {
             return response()->json([
-                'message' => 'Invalid request',
+                'message' => 'The given data was invalid.',
                 'errors' => [
-                    'email' => 'Parameter “email” is required. The entered email does not exist',
-                ]
-            ], 400);
-        }
-
-        if (!Hash::check($data['password'], $user->password)) {
-            return response()->json([
-                'message' => 'Invalid request',
-                'errors' => 'Parameter “password” is required. Incorrect password entered',
+                    'credentials' => [
+                        'code' => 'exists',
+                        'message' => 'Invalid email or password.',
+                    ],
+                ],
             ], 400);
         }
 
@@ -54,7 +51,14 @@ class AuthController extends Controller
             'auth_token', ['*'], now()->addHours(1)
         )->plainTextToken;
 
-        return response()->json(['token' => $token]);
+        return response()->json([
+            'message' => 'User successfully logged in.',
+            'info' => [
+                'token' => $token,
+                'user_id' => $user->user_id,
+                'expires_in' => 3600,
+            ],
+        ], 201);
     }
 
     public function logout(Request $request): JsonResponse

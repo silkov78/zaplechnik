@@ -48,6 +48,8 @@ class User extends Authenticatable
             Visit::class,
             'user_id',
             'campground_id',
+            'user_id',
+            'campground_id'
         );
     }
 

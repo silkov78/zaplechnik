@@ -9,7 +9,12 @@ use Illuminate\Support\Facades\File;
 
 class CampgroundSeeder extends Seeder
 {
-    public function run(GeojsonParser $parser): void
+    public function run(): void
+    {
+        Campground::factory(50)->create();
+    }
+
+    public function loadFromGeoJson(GeojsonParser $parser): void
     {
         $seederGeoJsonPath = database_path('seeders/data/campgrounds.geojson');
         $featuresArray = File::json($seederGeoJsonPath)['features'];
