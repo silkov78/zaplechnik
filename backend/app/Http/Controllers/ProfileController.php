@@ -64,6 +64,10 @@ class ProfileController extends Controller
         $user->tokens()->delete();
         $user->delete();
 
+        if ($user->avatar) {
+            Storage::delete('avatars/' . $user->avatar);
+        }
+
         return response()->json([
             'message' => 'User successfully deleted an account.',
             'info' => [
