@@ -55,6 +55,19 @@ class User extends Authenticatable
 
     public function getRank(): string
     {
+        if ($this->gender === Gender::FEMALE) {
+            return match (true) {
+                $this->visits_count < 1 => 'Домоседка',
+                $this->visits_count < 6 => 'Новичок',
+                $this->visits_count < 16 => 'Идущая к реке',
+                $this->visits_count < 31 => 'Туристка',
+                $this->visits_count < 51 => 'Следопыт',
+                $this->visits_count < 101 => 'Кочевница',
+                $this->visits_count >= 101 => 'Агафья Лыкова',
+                default => 'Домосед',
+            };
+        }
+
         return match (true) {
             $this->visits_count < 1 => 'Домосед',
             $this->visits_count < 6 => 'Новичок',
@@ -63,7 +76,7 @@ class User extends Authenticatable
             $this->visits_count < 51 => 'Следопыт',
             $this->visits_count < 101 => 'Кочевник',
             $this->visits_count >= 101 => 'Беар Гриллс',
-            default => 'домосед',
+            default => 'Домосед',
         };
     }
 
