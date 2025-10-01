@@ -38,8 +38,9 @@ class Visit extends Model
 
     protected static function booted(): void
     {
-        static::creating(function ($visit) {
-            $visit->user->increment('visits_count');
+        static::created(function ($visit) {
+            User::where('user_id', $visit->user_id)
+                ->increment('visits_count');
         });
     }
 }
