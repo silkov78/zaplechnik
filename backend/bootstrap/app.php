@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Laravel\Sanctum\PersonalAccessToken;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -32,5 +33,19 @@ return Application::configure(basePath: dirname(__DIR__))
                     ],
                 ], 401);
             }
+
+            $accessToken = PersonalAccessToken::findToken($token);
+            if (!$accessToken) {
+                return response()->json([
+                    'message' => 'Unauthenticated.',
+                    'errors' => [
+                        'token' => [
+                            'code' => 'invalid',
+                            'message' => 'Authentication token is malformed.',
+                        ],
+                    ],
+                ], 401);
+            }
+
         });
     })->create();

@@ -33,5 +33,24 @@ describe('api token', function () {
             ])
             ->assertJsonFragment(['code' => 'missing']);
     });
+
+    it('messages about invalid token', function () {
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer invalidToken',
+        ])->get($this->securedEndpoint);
+
+        $response
+            ->assertStatus(401)
+            ->assertJsonStructure([
+                'message',
+                'errors' => [
+                    'token' => [
+                        'code',
+                        'message',
+                    ],
+                ],
+            ])
+            ->assertJsonFragment(['code' => 'invalid']);
+    });
 });
 
