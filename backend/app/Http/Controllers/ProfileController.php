@@ -60,21 +60,22 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): JsonResponse
     {
-        $user = $request->user();
-        $userId = $user->user_id;
-
-        if ($user->avatar && Storage::exists('avatars/' . $user->avatar)) {
-            Storage::delete('avatars/' . $user->avatar);
-        }
-
-        $user->tokens()->delete();
-
-        $user->delete();
-
-        return response()->json([
-            'message' => 'User successfully deleted an account.',
-            'info' => ['user_id' => $userId],
-        ]);
+        return response()->json(['message' => 'Hakuna matata.']);
+//        $user = $request->user();
+//        $userId = $user->user_id;
+//
+//        if ($user->avatar && Storage::exists('avatars/' . $user->avatar)) {
+//            Storage::delete('avatars/' . $user->avatar);
+//        }
+//
+//        $user->tokens()->delete();
+//
+//        $user->delete();
+//
+//        return response()->json([
+//            'message' => 'User successfully deleted an account.',
+//            'info' => ['user_id' => $userId],
+//        ]);
     }
 
     protected function handleAvatarUpload(User $user, UploadedFile $avatarFile): string
