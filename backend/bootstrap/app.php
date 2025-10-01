@@ -47,5 +47,16 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 401);
             }
 
+            if ($accessToken->expires_at && $accessToken->expires_at->isPast()) {
+                return response()->json([
+                    'message' => 'Unauthenticated.',
+                    'errors' => [
+                        'token' => [
+                            'code' => 'expired',
+                            'message' => 'Your access token has expired. Please log in again.',
+                        ],
+                    ],
+                ], 401);
+            }
         });
     })->create();

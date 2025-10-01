@@ -52,5 +52,28 @@ describe('api token', function () {
             ])
             ->assertJsonFragment(['code' => 'invalid']);
     });
+
+    it('messages about expired token', function () {
+        $expiredToken = $this->currentUser->createToken(
+            'expiredToken', ['*'], now()->subDays(1)
+        )->plainTextToken;
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $expiredToken,
+        ])->get($this->securedEndpoint);
+
+        $response
+            ->assertStatus(401)
+            ->assertJsonStructure([
+                'message',
+                'errors' => [
+                    'token' => [
+                        'code',
+                        'message',
+                    ],
+                ],
+            ])
+            ->assertJsonFragment(['code' => 'expired']);
+    });
 });
 
