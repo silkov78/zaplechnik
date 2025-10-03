@@ -26,20 +26,38 @@ services:
             - zaplechnik_network
 
     postgis:
-        image: 'postgis/postgis:17-3.5-alpine'
+        image: postgis/postgis:17-3.5-alpine
         ports:
             - '5432:5432'
         environment:
-            POSTGRES_DB: 'zaplechnik_db'
-            POSTGRES_USER: 'vandra'
-            POSTGRES_PASSWORD: 'secret'
+            POSTGRES_DB: zaplechnik_db
+            POSTGRES_USER: vandra
+            POSTGRES_PASSWORD: secret
         volumes:
-            - 'pgsql_data:/var/lib/postgresql/data'
+            - pgsql_data:/var/lib/postgresql/data
         networks:
             - zaplechnik_network
 
+    redis:
+        image: redis:alpine
+        ports:
+            - '6379:6379'
+        volumes:
+            - redis_data:/data
+        networks:
+            - zaplechnik_network
+        healthcheck:
+            test:
+                - CMD
+                - redis-cli
+                - ping
+            retries: 3
+            timeout: 5s
+
 volumes:
     pgsql_data:
+        driver: local
+    redis_data:
         driver: local
 
 networks:
