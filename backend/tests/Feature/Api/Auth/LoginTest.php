@@ -87,4 +87,12 @@ describe('login', function () {
             'password' => 'Hakunamatata78',
         ]],
     ]);
+
+    it('rejects requests by rate limit (10)', function () {
+        for ($i = 0; $i < 11; $i++) {
+            $response = $this->postJson('/api/v1/login', $this->credentials);
+        }
+
+        $response->assertStatus(429);
+    });
 });
