@@ -120,6 +120,21 @@ describe('profile: update', function () {
         $response->assertStatus(200);
     });
 
+    it('rejects requests by medium rate limit (40)', function () {
+        $this->actingAs($this->currentUser);
+
+        for ($i = 0; $i < 40; $i++) {
+            $response = $this->patch('/api/v1/me');
+            expect($response->status())->not()->toBe(429);
+        }
+
+        $response = $this->patch('/api/v1/me');
+
+        $response->assertStatus(429)
+            ->assertJsonStructure(['message', 'errors' => ['rate-limit' => ['code', 'message']]])
+            ->assertJsonFragment(['code' => 'rate-limit']);
+    });
+
     it('rejects not-authenticated user', function () {
         $this->getJson('/api/v1/me')->assertStatus(401);
     });
