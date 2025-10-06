@@ -21,7 +21,7 @@ Route::prefix('v1')->group(function () {
         ->middleware('auth:sanctum')
         ->prefix('me')
         ->group(function () {
-            Route::get('/', 'show');
+            Route::get('/', 'show')->middleware(['throttle:medium']);
             Route::patch('/', 'update');
             Route::delete('/', 'destroy');
     });
