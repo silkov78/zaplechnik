@@ -4,12 +4,11 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    DB::table('users')->delete();
-
     $this->credentials = [
         'email' => 'testUser@test.com',
         'password' => 'Password78',
@@ -47,6 +46,19 @@ describe('login', function () {
 
         expect($response->json()['info']['token'])->not()->toBeEmpty()
         ->and($response->json()['info']['user_id'])->toBe($userId);
+    });
+
+    it('rejects requests by strict rate limit (10)', function () {
+        for ($i = 0; $i < 10; $i++) {
+            $response = $this->postJson('/api/v1/login', $this->credentials);
+            expect($response->status())->not()->toBe(429);
+        }
+
+        $response = $this->postJson('/api/v1/login', $this->credentials);
+
+        $response->assertStatus(429)
+            ->assertJsonStructure(['message', 'errors' => ['rate-limit' => ['code', 'message']]])
+            ->assertJsonFragment(['code' => 'rate-limit']);
     });
 
     it('rejects empty credentials', function ($emptyCredentials) {
@@ -87,12 +99,4 @@ describe('login', function () {
             'password' => 'Hakunamatata78',
         ]],
     ]);
-
-    it('rejects requests by rate limit (10)', function () {
-        for ($i = 0; $i < 11; $i++) {
-            $response = $this->postJson('/api/v1/login', $this->credentials);
-        }
-
-        $response->assertStatus(429);
-    });
 });

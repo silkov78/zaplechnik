@@ -22,8 +22,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        RateLimiter::for('login', function (Request $request) {
-            return Limit::perMinute(10)->by($request->ip());
+        RateLimiter::for('auth', function (Request $request) {
+            return Limit::perMinute(10)
+                ->by($request->ip())
+                ->response(function () {
+                    return response()->json([
+                        'message' => 'Too many requests.',
+                        'errors' => [
+                            'rate-limit' => [
+                                'code' => 'rate-limit',
+                                'message' => 'Too many requests to auth endpoint.',
+                            ],
+                        ],
+                    ], 429);
+                });
         });
     }
 }
