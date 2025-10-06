@@ -11,7 +11,7 @@ Route::prefix('v1')->group(function () {
     Route::controller(AuthController::class)->group(function () {
         Route::post('/login','login')->middleware(['throttle:auth']);
         Route::post('/register','register')->middleware(['throttle:auth']);
-        Route::post('/logout','logout')->middleware('auth:sanctum');
+        Route::post('/logout','logout')->middleware(['throttle:auth', 'auth:sanctum']);
     });
 
     // Profile

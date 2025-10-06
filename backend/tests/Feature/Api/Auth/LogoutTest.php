@@ -52,6 +52,22 @@ describe('logout', function () {
         $response->assertStatus(401);
     });
 
+    it('rejects requests by strict rate limit (10)', function () {
+        $this->actingAs($this->user);
+
+        for ($i = 0; $i < 10; $i++) {
+            $response = $this->postJson('/api/v1/logout');
+            expect($response->status())->not()->toBe(429);
+        }
+
+        $response = $this->postJson('/api/v1/logout');
+
+        $response->assertStatus(429)
+            ->assertJsonStructure(['message', 'errors' => ['rate-limit' => ['code', 'message']]])
+            ->assertJsonFragment(['code' => 'rate-limit']);
+    });
+
+
     it('rejects user with invalid token', function () {
         $response = $this->withHeader('Authorization', 'Bearer: HakunaMatata')
             ->postJson('/api/v1/logout');
