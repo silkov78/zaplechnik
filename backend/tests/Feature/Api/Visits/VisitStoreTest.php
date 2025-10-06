@@ -66,6 +66,21 @@ describe('visits: store', function () {
         $response->assertStatus(401);
     });
 
+    it('rejects requests by medium rate limit (40)', function () {
+        $this->actingAs($this->user);
+
+        for ($i = 0; $i < 40; $i++) {
+            $response = $this->post('/api/v1/visits');
+            expect($response->status())->not()->toBe(429);
+        }
+
+        $response = $this->post('/api/v1/visits');
+
+        $response->assertStatus(429)
+            ->assertJsonStructure(['message', 'errors' => ['rate-limit' => ['code', 'message']]])
+            ->assertJsonFragment(['code' => 'rate-limit']);
+    });
+
     it('rejects empty campground_id', function () {
         Sanctum::actingAs($this->user);
 
