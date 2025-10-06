@@ -103,4 +103,19 @@ describe('campgrounds', function () {
             ->assertJsonStructure(['message', 'errors' => ['rate-limit' => ['code', 'message']]])
             ->assertJsonFragment(['code' => 'rate-limit']);
     });
+
+    it('rejects requests by medium limit (100) for visited', function () {
+        $this->actingAs($this->user);
+
+        for ($i = 0; $i < 40; $i++) {
+            $response = $this->get('/api/v1/campgrounds/visited');
+            expect($response->status())->not()->toBe(429);
+        }
+
+        $response = $this->get('/api/v1/campgrounds/visited');
+
+        $response->assertStatus(429)
+            ->assertJsonStructure(['message', 'errors' => ['rate-limit' => ['code', 'message']]])
+            ->assertJsonFragment(['code' => 'rate-limit']);
+    });
 });
