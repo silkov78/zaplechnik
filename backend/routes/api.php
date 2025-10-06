@@ -23,7 +23,7 @@ Route::prefix('v1')->group(function () {
         ->group(function () {
             Route::get('/', 'show')->middleware(['throttle:medium']);
             Route::patch('/', 'update')->middleware(['throttle:medium']);
-            Route::delete('/', 'destroy');
+            Route::delete('/', 'destroy')->middleware(['throttle:strict']);
     });
 
     // Campgrounds

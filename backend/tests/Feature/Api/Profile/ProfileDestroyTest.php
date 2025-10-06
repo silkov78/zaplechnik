@@ -65,4 +65,19 @@ describe('profile: destroy', function () {
     it('rejects not-authenticated user', function () {
         $this->delete('/api/v1/me')->assertUnauthorized();
     });
+
+    it('rejects requests by strict rate limit (10)', function () {
+        $this->actingAs($this->userWithAvatar);
+
+        for ($i = 0; $i < 10; $i++) {
+            $response = $this->delete('/api/v1/me');
+            expect($response->status())->not()->toBe(429);
+        }
+
+        $response = $this->delete('/api/v1/me');
+
+        $response->assertStatus(429)
+            ->assertJsonStructure(['message', 'errors' => ['rate-limit' => ['code', 'message']]])
+            ->assertJsonFragment(['code' => 'rate-limit']);
+    });
 });
