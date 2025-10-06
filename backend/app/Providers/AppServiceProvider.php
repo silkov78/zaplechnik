@@ -22,52 +22,36 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        RateLimiter::for('strict', function (Request $request) {
-            return Limit::perMinute(10)
-                ->by($request->ip())
-                ->response(function () {
-                    return response()->json([
-                        'message' => 'Too many requests.',
-                        'errors' => [
-                            'rate-limit' => [
-                                'code' => 'rate-limit',
-                                'message' => 'Rate limit with 10 requests per minute is exceeded.',
-                            ],
-                        ],
-                    ], 429);
-                });
-        });
+        $this->configureRateLimiters();
+    }
 
-        RateLimiter::for('medium', function (Request $request) {
-            return Limit::perMinute(40)
-                ->by($request->ip())
-                ->response(function () {
-                    return response()->json([
-                        'message' => 'Too many requests.',
-                        'errors' => [
-                            'rate-limit' => [
-                                'code' => 'rate-limit',
-                                'message' => 'Rate limit with 40 requests per minute is exceeded.',
-                            ],
-                        ],
-                    ], 429);
-                });
-        });
+    /**
+     * Configure rate limiters for the application.
+     */
+    protected function configureRateLimiters(): void
+    {
+        $limits = [
+            'strict' => 10,
+            'medium' => 40,
+            'lite' => 100,
+        ];
 
-        RateLimiter::for('lite', function (Request $request) {
-            return Limit::perMinute(100)
-                ->by($request->ip())
-                ->response(function () {
-                    return response()->json([
-                        'message' => 'Too many requests.',
-                        'errors' => [
-                            'rate-limit' => [
-                                'code' => 'rate-limit',
-                                'message' => 'Rate limit with 100 requests per minute is exceeded.',
+        foreach ($limits as $limitName => $maxAttempts) {
+            RateLimiter::for($limitName, function (Request $request) use ($maxAttempts) {
+                return Limit::perMinute($maxAttempts)
+                    ->by($request->ip())
+                    ->response(function () use ($maxAttempts) {
+                        return response()->json([
+                            'message' => 'Too many requests.',
+                            'errors' => [
+                                'rate-limit' => [
+                                    'code' => 'rate-limit',
+                                    'message' => "Rate limit with {$maxAttempts} requests per minute is exceeded.",
+                                ],
                             ],
-                        ],
-                    ], 429);
-                });
-        });
+                        ], 429);
+                    });
+            });
+        }
     }
 }
