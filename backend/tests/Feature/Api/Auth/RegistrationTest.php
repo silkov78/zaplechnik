@@ -37,6 +37,19 @@ describe('registration', function () {
             ]);
     });
 
+    it('rejects requests by strict rate limit (10)', function () {
+        for ($i = 0; $i < 10; $i++) {
+            $response = $this->postJson('/api/v1/register');
+            expect($response->status())->not()->toBe(429);
+        }
+
+        $response = $this->postJson('/api/v1/register');
+
+        $response->assertStatus(429)
+            ->assertJsonStructure(['message', 'errors' => ['rate-limit' => ['code', 'message']]])
+            ->assertJsonFragment(['code' => 'rate-limit']);
+    });
+
     it('rejects empty credentials', function ($invalidData) {
         $response = $this->postJson('/api/v1/register', $invalidData);
 
