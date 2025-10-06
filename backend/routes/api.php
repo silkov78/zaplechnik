@@ -30,7 +30,7 @@ Route::prefix('v1')->group(function () {
     Route::controller(CampgroundsController::class)->group(function () {
         Route::get('/campgrounds', 'index')->middleware(['throttle:lite']);
         Route::get('/campgrounds/visited', 'indexVisited')
-            ->middleware('auth:sanctum');
+            ->middleware(['throttle:medium', 'auth:sanctum']);
     });
 
     // Visits
