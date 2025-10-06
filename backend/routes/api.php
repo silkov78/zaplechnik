@@ -28,7 +28,7 @@ Route::prefix('v1')->group(function () {
 
     // Campgrounds
     Route::controller(CampgroundsController::class)->group(function () {
-        Route::get('/campgrounds', 'index');
+        Route::get('/campgrounds', 'index')->middleware(['throttle:lite']);
         Route::get('/campgrounds/visited', 'indexVisited')
             ->middleware('auth:sanctum');
     });

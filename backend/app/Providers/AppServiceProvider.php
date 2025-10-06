@@ -31,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
                         'errors' => [
                             'rate-limit' => [
                                 'code' => 'rate-limit',
-                                'message' => 'Rate limit with 10 requests is exceeded.',
+                                'message' => 'Rate limit with 10 requests per minute is exceeded.',
                             ],
                         ],
                     ], 429);
@@ -47,7 +47,23 @@ class AppServiceProvider extends ServiceProvider
                         'errors' => [
                             'rate-limit' => [
                                 'code' => 'rate-limit',
-                                'message' => 'Too many requests to auth endpoint.',
+                                'message' => 'Rate limit with 40 requests per minute is exceeded.',
+                            ],
+                        ],
+                    ], 429);
+                });
+        });
+
+        RateLimiter::for('lite', function (Request $request) {
+            return Limit::perMinute(100)
+                ->by($request->ip())
+                ->response(function () {
+                    return response()->json([
+                        'message' => 'Too many requests.',
+                        'errors' => [
+                            'rate-limit' => [
+                                'code' => 'rate-limit',
+                                'message' => 'Rate limit with 100 requests per minute is exceeded.',
                             ],
                         ],
                     ], 429);
