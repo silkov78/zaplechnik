@@ -22,7 +22,7 @@ Route::prefix('v1')->group(function () {
         ->prefix('me')
         ->group(function () {
             Route::get('/', 'show')->middleware(['throttle:medium']);
-            Route::patch('/', 'update');
+            Route::patch('/', 'update')->middleware(['throttle:medium']);
             Route::delete('/', 'destroy');
     });
 
