@@ -35,7 +35,7 @@ Route::prefix('v1')->group(function () {
 
     // Visits
     Route::controller(VisitsController::class)
-        ->middleware('auth:sanctum')
+        ->middleware(['throttle:medium', 'auth:sanctum'])
         ->group(function () {
             Route::post('/visits', 'store');
             Route::delete('/visits', 'destroy');
