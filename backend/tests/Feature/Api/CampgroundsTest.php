@@ -10,6 +10,8 @@ use Laravel\Sanctum\Sanctum;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
+    Cache::flush();
+
     $this->user = User::factory()->create();
 
     Campground::factory(10)->create();
@@ -23,9 +25,6 @@ beforeEach(function () {
 
 describe('campgrounds', function () {
     it('returns campgrounds feature collection', function () {
-        Sanctum::actingAs($this->user);
-        Cache::flush();
-
         $response = $this->getJson('/api/v1/campgrounds');
 
         $this->assertTrue(Cache::has('campgrounds_geojson'));
@@ -48,6 +47,16 @@ describe('campgrounds', function () {
                 'campground_id' => $this->fistCampground->campground_id,
                 'osm_id' => $this->fistCampground->osm_id,
             ]);
+    });
+
+    it('clears cache after creating new campground', function () {
+        $this->getJson('/api/v1/campgrounds');
+
+        $this->assertTrue(Cache::has('campgrounds_geojson'));
+
+        Campground::factory()->create();
+
+        $this->assertFalse(Cache::has('campgrounds_geojson'));
     });
 
     it('returns campgrounds visited by user', function () {
