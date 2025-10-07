@@ -139,15 +139,18 @@ describe('profile: update', function () {
         $this->getJson('/api/v1/me')->assertStatus(401);
     });
 
-    it('rejects empty body', function () {
+    it('rejects body without expected parameters', function ($invalidArray) {
         $this->actingAs($this->currentUser);
 
-        $this->patch('/api/v1/me', [])
+        $this->patch('/api/v1/me', $invalidArray)
             ->assertStatus(422)
             ->assertJsonFragment([
                 'message' => 'At least one field must be provided.',
             ]);
-    });
+    })->with([
+        'empty body' => [[[]]],
+        'array without expected parameters' => [[['hakuna' => 'matata']]],
+    ]);
 
     it('rejects invalid name', function ($invalidParam) {
         $this->actingAs($this->currentUser);
