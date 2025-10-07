@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Support\Facades\Cache;
 
 class Campground extends Model
 {
@@ -42,5 +43,12 @@ class Campground extends Model
             'campground_id',
             'user_id',
         );
+    }
+
+    public static function booted(): void
+    {
+        static::saved(function () {
+            Cache::forget('campgrounds_geojson');
+        });
     }
 }

@@ -17,8 +17,8 @@ class CampgroundsController extends Controller
      */
     public function index(): JsonResponse
     {
-        $campgroundsArray = Cache::remember(
-            'campgrounds_geojson', 3600, function () {
+        $campgroundsArray = Cache::rememberForever(
+            'campgrounds_geojson', function () {
                 return $this->getFeatureCollectionArray(
                     Campground::all(), 'osm_geometry'
                 );
