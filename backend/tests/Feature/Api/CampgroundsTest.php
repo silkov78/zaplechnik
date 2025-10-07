@@ -4,6 +4,7 @@ use App\Models\Campground;
 use App\Models\Visit;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Sanctum\Sanctum;
 
 uses(RefreshDatabase::class);
@@ -23,8 +24,11 @@ beforeEach(function () {
 describe('campgrounds', function () {
     it('returns campgrounds feature collection', function () {
         Sanctum::actingAs($this->user);
+        Cache::flush();
 
         $response = $this->getJson('/api/v1/campgrounds');
+
+        $this->assertTrue(Cache::has('campgrounds_geojson'));
 
         $response->assertStatus(200)
             ->assertJsonStructure([

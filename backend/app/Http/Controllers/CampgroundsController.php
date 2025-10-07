@@ -6,6 +6,7 @@ use App\Http\Controllers\Concerns\GeneratesGeoJsonArray;
 use App\Models\Campground;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class CampgroundsController extends Controller
 {
@@ -16,8 +17,12 @@ class CampgroundsController extends Controller
      */
     public function index(): JsonResponse
     {
-        $campgroundsArray = $this->getFeatureCollectionArray(
-            Campground::all(), 'osm_geometry'
+        $campgroundsArray = Cache::remember(
+            'campgrounds_geojson', 3600, function () {
+                return $this->getFeatureCollectionArray(
+                    Campground::all(), 'osm_geometry'
+                );
+            }
         );
 
         return response()->json($campgroundsArray);
