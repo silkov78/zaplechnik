@@ -28,20 +28,6 @@ class ProfileController extends Controller
         $data = $request->validated();
         $user = $request->user();
 
-        if (!$data) {
-            return response()->json([
-                'message' => 'The given data was invalid.',
-                'errors' => [
-                    'fields' => [
-                        [
-                            'code' => 'empty',
-                            'message' => 'At least one field must be provided.',
-                        ]
-                    ],
-                ],
-            ], 422);
-        }
-
         if ($request->hasFile('avatar')) {
             $data['avatar'] = $this->handleAvatarUpload(
                 $user, $request->file('avatar')
