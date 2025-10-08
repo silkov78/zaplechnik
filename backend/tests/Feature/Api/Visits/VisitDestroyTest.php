@@ -115,9 +115,12 @@ describe('visits: destroy', function () {
             'campground_id' => 999999,
         ]);
 
-        $response->assertStatus(400)
-            ->assertJsonStructure(['message', 'errors' => ['campground_id']])
-            ->assertJsonFragment(['code' => 'exists']);;
+        $response->assertStatus(404)
+            ->assertJsonStructure([
+                'message',
+                'errors' => ['campground_id' => [['code', 'message']]]
+            ])
+            ->assertJsonFragment(['code' => 'exists']);
     });
 
     it('rejects campground_id not associated with current user', function () {
@@ -128,8 +131,11 @@ describe('visits: destroy', function () {
             'user_id' => $this->user->user_id,
         ]);
 
-        $response->assertStatus(400)
-            ->assertJsonStructure(['message', 'errors' => ['campground_id']])
-            ->assertJsonFragment(['code' => 'exists']);;
+        $response->assertStatus(404)
+            ->assertJsonStructure([
+                'message',
+                'errors' => ['campground_id' => [['code', 'message']]]
+            ])
+            ->assertJsonFragment(['code' => 'exists']);
     });
 });
