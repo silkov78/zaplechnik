@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\VisitStoreRequest;
 use App\Http\Resources\StoreVisitResource;
+use App\Http\Responses\ErrorResponse;
 use App\Models\Campground;
 use App\Models\Visit;
 use Illuminate\Http\JsonResponse;
@@ -46,7 +47,7 @@ class VisitsController extends Controller
      * Destroys visit record.
      * Accepts required campground_id from query string.
      */
-    public function destroy(Request $request): JsonResponse
+    public function destroy(Request $request): JsonResponse|ErrorResponse
     {
         $data = $request->validate([
             'campground_id' => 'required|decimal:0|gt:0'
@@ -54,36 +55,27 @@ class VisitsController extends Controller
 
         $user = auth()->user();
 
-        $visitToDelete = Visit::where([
-            'campground_id' => $data['campground_id'],
-            'user_id' => $user->user_id,
-        ]);
-
-        if (!$visitToDelete->exists()) {
-            return response()->json([
-                'message' => 'The given data was invalid.',
-                'errors' => [
-                    'campground_id' => [
-                        'code' => 'exists',
-                        'message' => 'Visit with provided user_id and campground_id does not exist.',
-                    ],
-                ],
-            ], 400);
-        }
-
         $visit = Visit::where([
             'campground_id' => $data['campground_id'],
             'user_id' => $user->user_id,
-        ]);
+        ])->first();
 
-        $visitInfo = $visit->first()->toArray();
+        if (!$visit) {
+            return new ErrorResponse(
+                'campground_id',
+                'exists',
+                'Visit with provided campground_id and user_id does not exist.',
+                404
+            );
+        }
+
         $visit->delete();
 
         return response()->json([
             'message' => 'User successfully deleted a visit.',
             'info' => [
-                'user_id' => $visitInfo['user_id'],
-                'visit_id' => $visitInfo['visit_id'],
+                'user_id' => $visit->user_id,
+                'visit_id' => $visit->visit_id,
             ],
         ]);
     }
