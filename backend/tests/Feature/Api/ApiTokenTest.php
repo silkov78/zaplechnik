@@ -25,10 +25,10 @@ describe('api token', function () {
             ->assertJsonStructure([
                 'message',
                 'errors' => [
-                    'token' => [
+                    'token' => [[
                         'code',
                         'message',
-                    ],
+                    ]],
                 ],
             ])
             ->assertJsonFragment(['code' => 'missing']);
@@ -44,10 +44,10 @@ describe('api token', function () {
             ->assertJsonStructure([
                 'message',
                 'errors' => [
-                    'token' => [
+                    'token' => [[
                         'code',
                         'message',
-                    ],
+                    ]],
                 ],
             ])
             ->assertJsonFragment(['code' => 'invalid']);
@@ -67,10 +67,10 @@ describe('api token', function () {
             ->assertJsonStructure([
                 'message',
                 'errors' => [
-                    'token' => [
+                    'token' => [[
                         'code',
                         'message',
-                    ],
+                    ]],
                 ],
             ])
             ->assertJsonFragment(['code' => 'expired']);

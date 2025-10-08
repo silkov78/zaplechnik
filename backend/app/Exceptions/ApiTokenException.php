@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Http\Responses\ErrorResponse;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -51,16 +52,14 @@ class ApiTokenException extends Exception
         }
     }
 
-    public function render(): JsonResponse
+    public function render(): ErrorResponse
     {
-        return response()->json([
-            'message' => 'Unauthenticated.',
-            'errors' => [
-                'token' => [
-                    'code' => $this->tokenErrorCode,
-                    'message' => $this->tokenErrorMessage,
-                ],
-            ],
-        ], 401);
+        return new ErrorResponse(
+            'token',
+            $this->tokenErrorCode,
+            $this->tokenErrorMessage,
+            401,
+            'Unauthenticated.',
+        );
     }
 }
