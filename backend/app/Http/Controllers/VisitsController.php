@@ -18,22 +18,17 @@ class VisitsController extends Controller
      *
      * It's possible to pass in campground_di such values as "2", 8.0, "12.0".
      */
-    public function store(VisitStoreRequest $request): StoreVisitResource|JsonResponse
+    public function store(VisitStoreRequest $request): StoreVisitResource|ErrorResponse
     {
         $data = $request->validated();
 
         if (!Campground::where('campground_id', $data['campground_id'])->exists()) {
-            return response()->json([
-                'message' => 'The given data was invalid.',
-                'errors' => [
-                    'campground_id' => [
-                        [
-                            'code' => 'exists',
-                            'message' => 'Campground with provided campground_id does not exist.',
-                        ]
-                    ],
-                ],
-            ], 400);
+            return new ErrorResponse(
+                'campground_id',
+                'exists',
+                'Campground with provided campground_id does not exist.',
+                400
+            );
         }
 
         $data['user_id'] = $request->user()->user_id;

@@ -4,6 +4,9 @@ namespace App\Http\Responses;
 
 use Illuminate\Http\JsonResponse;
 
+/**
+ * Standard error response with declared structure.
+ */
 class ErrorResponse extends JsonResponse
 {
     public function __construct(
