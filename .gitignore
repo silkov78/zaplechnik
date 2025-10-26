@@ -4,3 +4,5 @@
 /.idea
 /.nova
 /.vscode
+.DS_Store
+frontend/.DS_Store

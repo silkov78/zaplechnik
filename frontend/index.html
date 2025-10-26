@@ -1,1 +1,26 @@
-<h1>Hello from frontend container!</h1>
+<!DOCTYPE html>
+<html lang="be">
+<head>
+  <meta charset="UTF-8">
+  <title>Zaplechnik</title>
+  <link href='https://unpkg.com/maplibre-gl@3.3.1/dist/maplibre-gl.css' rel='stylesheet' />
+  <link href="https://unpkg.com/@maplibre/maplibre-gl-geocoder@1.5.0/dist/maplibre-gl-geocoder.css" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div id="map">
+    <div id="left" class="sidebar flex-center left collapsed">
+        <div class="sidebar-content rounded-rect flex-center">
+            <div id="sidebar-content"></div>
+        </div>
+        <div class="sidebar-toggle">
+            <div class="arrow-left"></div>
+            <div class="arrow-right"></div>
+        </div>
+    </div>
+  </div>
+  <script src='https://unpkg.com/maplibre-gl@3.3.1/dist/maplibre-gl.js'></script>
+  <script src="https://unpkg.com/@maplibre/maplibre-gl-geocoder@1.5.0/dist/maplibre-gl-geocoder.min.js"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
