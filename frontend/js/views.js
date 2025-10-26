@@ -68,6 +68,9 @@ export const views = {
   },
 
   camp: (data) => {
+    const regionTag = data.properties['region:be'] ? `#${data.properties['region:be'].replace(' вобласць', '').replace(' вобл.', '')}` : '';
+    const districtTag = data.properties['district:be'] ? `#${data.properties['district:be'].replace(' раён', '').replace(' р-н', '')}` : '';
+    
     return `
     <h2 class="sidebar-title">${data.properties.name || 'Без назвы'}</h2>
     
@@ -88,8 +91,8 @@ export const views = {
     </ul>
 
     <div class="hashtags">
-      <span class="hashtag">#Мядзельскі</span>
-      <span class="hashtag">#Мінская</span>
+      ${regionTag ? `<span class="hashtag">${regionTag}</span>` : ''}
+      ${districtTag ? `<span class="hashtag">${districtTag}</span>` : ''}
     </div>
 
     <div class="action-buttons">
