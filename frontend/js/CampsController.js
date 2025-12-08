@@ -7,7 +7,7 @@ export class CampsController {
 
   async loadCamps() {
     try {
-      const response = await fetch('data/camp_site_geocoded.geojson');
+      const response = await fetch('http://localhost:8000/api/v1/campgrounds');
       this.campsData = await response.json();
       return this.campsData;
     } catch (error) {
