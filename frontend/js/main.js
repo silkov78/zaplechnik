@@ -18,10 +18,19 @@ async function initApp() {
     });
 
     const campsController = new CampsController(mapController);
-    await campsController.addCampsToMap();
+    // await campsController.addCampsToMap();
 
     const authController = new AuthController();
     authController.checkAuthOnLoad();
+
+    // Wait for map to load BEFORE adding camps
+    map.on('load', async () => {
+        // Add camps after map style is loaded
+        await campsController.addCampsToMap();
+
+        // Then toggle sidebar
+        toggleSidebar('left');
+    });
 
     document.addEventListener('campSelected', (event) => {
         const feature = event.detail.feature;
@@ -43,10 +52,6 @@ async function initApp() {
         } else {
             sidebarHandlers.renderSidebar('unreg_user');
         }
-    });
-
-    map.on('load', () => {
-        toggleSidebar('left');
     });
 
     function toggleSidebar(id) {
