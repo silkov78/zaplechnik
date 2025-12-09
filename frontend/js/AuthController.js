@@ -294,28 +294,22 @@ export class AuthController {
     }
   }
 
+  // Регистрация пользователя
   async registerUser(userData) {
-    // Имитация API запроса
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    return {
-      success: true,
-      user: {
-        id: Date.now(),
-        name: userData.name,
-        email: userData.email,
-        avatar: 'https://via.placeholder.com/50',
-        telegram: '@newuser',
-        about: 'Новы карыстальнік',
-        registrationDate: new Date().toLocaleDateString('be-BY', { 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric' 
-        }),
-        visitedCamps: 0
-      },
-      token: 'fake-jwt-token-' + Date.now()
-    };
+    try {
+      const response = await fetch('http://localhost:8000/api/v1/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData)
+      });
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error registering user:', error);
+      throw error;
+    }
   }
 
   showLoading(form) {
