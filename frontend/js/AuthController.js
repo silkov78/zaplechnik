@@ -265,32 +265,50 @@ export class AuthController {
     document.dispatchEvent(event);
   }
 
-  // API заглушки
+  // Аутентификация пользователя
   async authenticateUser(credentials) {
-    // Имитация API запроса
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Простая проверка для демонстрации
-    if (credentials.email === 'test@example.com' && credentials.password === 'password') {
-      return {
-        success: true,
-        user: {
-          id: 1,
-          name: 'Тестовый пользователь',
-          email: credentials.email,
-          avatar: 'https://via.placeholder.com/50',
-          telegram: '@test',
-          about: 'туды - сюды',
-          registrationDate: '1 жніўня 2025',
-          visitedCamps: 15
+    const tokenResponse = await this.requestAuthToken(credentials);
+    const authToken = tokenResponse.info.token;
+
+    const userInfo = await this.requestUserInfo(authToken);
+
+    return {
+      success: true,
+      user: userInfo.data,
+      token: authToken
+    };
+  }
+
+  async requestAuthToken(credentials) {
+    try {
+      const response = await fetch('http://localhost:8000/api/v1/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        token: 'fake-jwt-token-' + Date.now()
-      };
-    } else {
-      return {
-        success: false,
-        message: 'Няправільны email або пароль'
-      };
+        body: JSON.stringify(credentials)
+      });
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error authenticating user:', error);
+      throw error;
+    }
+  }
+
+  async requestUserInfo(authToken) {
+    try {
+      const response = await fetch('http://localhost:8000/api/v1/me', {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + authToken
+        }
+      });
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error while receiving user data:', error);
+      throw error;
     }
   }
 
