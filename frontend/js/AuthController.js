@@ -267,6 +267,7 @@ export class AuthController {
 
   // Аутентификация пользователя
   async authenticateUser(credentials) {
+    // TODO. Handle edge cases (invalid credentials), refactor
     const tokenResponse = await this.requestAuthToken(credentials);
     const authToken = tokenResponse.info.token;
 
