@@ -156,18 +156,29 @@ export class AuthController {
 
     try {
       this.showLoading(form);
-      
-      // Здесь будет реальный API запрос
-      const response = await this.authenticateUser(credentials);
-      
-      if (response.success) {
-        this.setUser(response.user, response.token);
-        this.closeModals();
-        this.notifyAuthChange();
-        this.showSuccess('Вы ўвайшлі ў сістэму!');
-      } else {
-        this.showError(response.message);
+
+      // Get token
+      const tokenResponse = await this.requestAuthToken(credentials);
+      if (!tokenResponse.ok) {
+        this.showError(tokenResponse.message);
+        return;
       }
+      const tokenResponseData = await tokenResponse.json();
+      const authToken = tokenResponseData.info.token;
+
+      // Get user data
+      const userResponse = await this.requestUserInfo(authToken);
+      if (!userResponse.ok) {
+        this.showError(tokenResponse.message);
+        return;
+      }
+      const userResponseData = await userResponse.json();
+
+      this.setUser(userResponseData.data, authToken);
+      this.closeModals();
+      this.notifyAuthChange();
+      this.showSuccess('Вы ўвайшлі ў сістэму!');
+
     } catch (error) {
       this.showError('Памылка ўваходу. Паспрабуйце яшчэ раз.');
       console.error('Login error:', error);
@@ -288,33 +299,29 @@ export class AuthController {
 
   async requestAuthToken(credentials) {
     try {
-      const response = await fetch('http://localhost:8000/api/v1/login', {
+      return await fetch('http://localhost:8000/api/v1/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(credentials)
       });
-
-      return await response.json();
     } catch (error) {
-      console.error('Error authenticating user:', error);
+      console.error('Error receiving token:', error);
       throw error;
     }
   }
 
   async requestUserInfo(authToken) {
     try {
-      const response = await fetch('http://localhost:8000/api/v1/me', {
+      return await fetch('http://localhost:8000/api/v1/me', {
         method: 'GET',
         headers: {
           'Authorization': 'Bearer ' + authToken
         }
       });
-
-      return await response.json();
     } catch (error) {
-      console.error('Error while receiving user data:', error);
+      console.error('Error receiving user data:', error);
       throw error;
     }
   }
