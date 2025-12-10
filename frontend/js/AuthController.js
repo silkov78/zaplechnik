@@ -199,10 +199,16 @@ export class AuthController {
       this.showLoading(form);
       
       // Здесь будет реальный API запрос
-      const response = await this.registerUser(userData);
+      const response = await fetch(
+          'http://localhost:8000/api/v1/register',
+          {
+            method: 'POST',
+            headers: {'Content-type': 'application/json'},
+            body: JSON.stringify(userData)
+          }
+      );
       
-      if (response.success) {
-        this.setUser(response.user, response.token);
+      if (response.ok) {
         this.closeModals();
         this.notifyAuthChange();
         this.showSuccess('Вы паспяхова зарэгістраваліся!');
@@ -309,24 +315,6 @@ export class AuthController {
       return await response.json();
     } catch (error) {
       console.error('Error while receiving user data:', error);
-      throw error;
-    }
-  }
-
-  // Регистрация пользователя
-  async registerUser(userData) {
-    try {
-      const response = await fetch('http://localhost:8000/api/v1/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData)
-      });
-
-      return await response.json();
-    } catch (error) {
-      console.error('Error registering user:', error);
       throw error;
     }
   }
