@@ -36,19 +36,13 @@ export const views = {
         
         <div class="user-stats-simple">
           <div class="stat-line">
-            <strong>Telegram:</strong> ${user.telegram || '@username'}
+            <strong>Telegram:</strong> ${user.telegram || 'Не пазначана'}
           </div>
           <div class="stat-line">
-            <strong>Email:</strong> ${user.email}
+            <strong>Пра сябе:</strong> ${user.bio || 'Не пазначана'}
           </div>
           <div class="stat-line">
-            <strong>Пра сябе:</strong> ${user.about || 'Не указано'}
-          </div>
-          <div class="stat-line">
-            <strong>Дата рэгістрацыі:</strong> ${user.registrationDate || 'Не указано'}
-          </div>
-          <div class="stat-line">
-            <strong>Колькасць наведаных стаянак:</strong> ${user.visitedCamps || 0}
+            <strong>Колькасць наведаных стаянак:</strong> ${user.info.visits_count || 'Не пазначана'}
           </div>
         </div>
         
