@@ -18,10 +18,7 @@ async function initApp() {
     });
 
     const campsController = new CampsController(mapController);
-    // await campsController.addCampsToMap();
-
     const authController = new AuthController();
-    authController.checkAuthOnLoad();
 
     // Wait for map to load BEFORE adding camps
     map.on('load', async () => {
@@ -89,6 +86,8 @@ async function initApp() {
     });
 
     sidebarHandlers.renderSidebar('unreg_user');
+    authController.checkAuthOnLoad();
+
     sidebarHandlers.init(mapController, authController);
 }
 
