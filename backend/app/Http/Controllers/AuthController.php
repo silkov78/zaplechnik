@@ -56,7 +56,7 @@ class AuthController extends Controller
             'info' => [
                 'token' => $token,
                 'user_id' => $user->user_id,
-                'expires_in' => 3600,
+                'expires_in' => now()->addHours(1)->timestamp,
             ],
         ], 201);
     }
