@@ -282,21 +282,6 @@ export class AuthController {
     document.dispatchEvent(event);
   }
 
-  // Аутентификация пользователя
-  async authenticateUser(credentials) {
-    // TODO. Handle edge cases (invalid credentials), refactor
-    const tokenResponse = await this.requestAuthToken(credentials);
-    const authToken = tokenResponse.info.token;
-
-    const userInfo = await this.requestUserInfo(authToken);
-
-    return {
-      success: true,
-      user: userInfo.data,
-      token: authToken
-    };
-  }
-
   async requestAuthToken(credentials) {
     try {
       return await fetch('http://localhost:8000/api/v1/login', {
