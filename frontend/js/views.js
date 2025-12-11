@@ -26,7 +26,7 @@ export const views = {
       <div class="user-profile">
         <div class="user-header">
           <div class="user-avatar">
-            <img src="${user.avatar || 'https://via.placeholder.com/50'}" alt="Аватар" class="avatar-img">
+            <img src="${user.avatarUrl || 'https://via.placeholder.com/50'}" alt="Аватар" class="avatar-img">
           </div>
           <div class="user-info">
             <h3 class="user-name">${user.name}</h3>
