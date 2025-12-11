@@ -2,7 +2,7 @@ export class AuthController {
   constructor() {
     this.currentUser = null;
     this.isAuthenticated = false;
-    this.authToken = null;
+    this.authTokenInfo = null;
     this.setupEventListeners();
   }
 
@@ -174,7 +174,7 @@ export class AuthController {
       }
       const userResponseData = await userResponse.json();
 
-      this.setUser(userResponseData.data, authToken);
+      this.setUser(userResponseData.data, tokenResponseData.info);
       this.closeModals();
       this.notifyAuthChange();
       this.showSuccess('Вы ўвайшлі ў сістэму!');
@@ -246,12 +246,12 @@ export class AuthController {
     this.showSuccess('Вы выйшлі з сістэмы');
   }
 
-  setUser(user, token) {
+  setUser(user, authTokenInfo) {
     this.currentUser = user;
     this.isAuthenticated = true;
-    this.authToken = token;
+    this.authTokenInfo = authTokenInfo;
     
-    localStorage.setItem('authToken', token);
+    localStorage.setItem('authTokenInfo', JSON.stringify(authTokenInfo));
     localStorage.setItem('user', JSON.stringify(user));
   }
 
