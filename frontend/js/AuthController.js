@@ -237,9 +237,9 @@ export class AuthController {
   logout() {
     this.currentUser = null;
     this.isAuthenticated = false;
-    this.authToken = null;
+    this.authTokenInfo = null;
     
-    localStorage.removeItem('authToken');
+    localStorage.removeItem('authTokenInfo');
     localStorage.removeItem('user');
     
     this.notifyAuthChange();
@@ -256,12 +256,12 @@ export class AuthController {
   }
 
   checkAuthOnLoad() {
-    const token = localStorage.getItem('authToken');
+    const authTokenInfo = localStorage.getItem('authTokenInfo');
     const user = localStorage.getItem('user');
     
-    if (token && user) {
+    if (authTokenInfo && user) {
       try {
-        this.authToken = token;
+        this.authTokenInfo = JSON.parse(authTokenInfo);
         this.currentUser = JSON.parse(user);
         this.isAuthenticated = true;
         this.notifyAuthChange();
@@ -372,7 +372,7 @@ export class AuthController {
     return this.isAuthenticated;
   }
 
-  getAuthToken() {
-    return this.authToken;
+  getAuthTokenInfo() {
+    return this.authTokenInfo;
   }
 }
