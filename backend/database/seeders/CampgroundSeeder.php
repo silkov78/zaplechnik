@@ -9,17 +9,24 @@ use Illuminate\Support\Facades\File;
 
 class CampgroundSeeder extends Seeder
 {
+    private const string CAMPGROUNDS_FILE = 'seeders/data/camp_site_geocoded.geojson';
+
+    public function __construct(
+        public readonly GeojsonParser $parser
+    ) {}
+
     public function run(): void
     {
-        Campground::factory(50)->create();
+        $this->loadFromGeoJson();
     }
 
-    public function loadFromGeoJson(GeojsonParser $parser): void
+    public function loadFromGeoJson(): void
     {
-        $seederGeoJsonPath = database_path('seeders/data/campgrounds.geojson');
+        $seederGeoJsonPath = database_path(self::CAMPGROUNDS_FILE);
         $featuresArray = File::json($seederGeoJsonPath)['features'];
 
         $osmDatabaseMapping = [
+            '@id' => 'osm_id',
             'name' => 'osm_name',
             'geometry' => 'osm_geometry',
             'description' => 'osm_description',
@@ -30,18 +37,23 @@ class CampgroundSeeder extends Seeder
             'toilets' => 'osm_toilets',
             'access' => 'osm_access',
             'image' => 'osm_image',
+            'district:be' => 'script_district',
+            'region:be' => 'script_region',
         ];
 
         foreach ($featuresArray as $feature) {
-            $campArray = $feature['properties'];
-            $campArray['geometry'] = $parser->parse($feature['geometry']);
+            $campArray = [];
 
-            foreach ($osmDatabaseMapping as $osmName => $databaseName) {
-                if (array_key_exists($osmName, $campArray)) {
-                    $campArray[$databaseName] = $campArray[$osmName];
+            $campArray['osm_geometry'] = $this->parser->parse($feature['geometry']);
 
-                    unset($campArray[$osmName]);
+            foreach ($feature['properties'] as $featureProperty => $propertyValue) {
+                if (!array_key_exists($featureProperty, $osmDatabaseMapping)) {
+                    continue;
                 }
+
+                $databaseName = $osmDatabaseMapping[$featureProperty];
+
+                $campArray[$databaseName] = $propertyValue;
             }
 
             Campground::create($campArray);
